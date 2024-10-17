@@ -1,24 +1,15 @@
-# Ant Design Pro
+# Split-n'-Share
+Your solution to group-buying.
 
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
-
-## Environment Prepare
-
-Install `node_modules`:
+## Setup Project
 
 ```bash
-npm install
-```
-
-or
-
-```bash
-yarn
+git clone https://github.com/Casheeew/split-n-share
+cd split-n-share
+pnpm install
 ```
 
 ## Provided Scripts
-
-Ant Design Pro provides some useful script to help you quick start and build with web project, code style check and test.
 
 Scripts provided in `package.json`. It's safe to modify or add additional script:
 
@@ -53,5 +44,6 @@ npm test
 ```
 
 ## More
+https://pro.ant.design
 
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).
+This is a [CS473 Social Computing](https://social.cstlab.org/) term project.
