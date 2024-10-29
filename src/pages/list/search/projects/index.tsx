@@ -64,7 +64,7 @@ const Projects: FC = () => {
                       src={member.avatar}
                       tips={member.name}
                     />
-                  ))}
+                    ))}
                 </AvatarList>
               </div>
             </div>
@@ -114,16 +114,17 @@ const Projects: FC = () => {
           <StandardFormRow title="其它选项" grid last>
             <Row gutter={16}>
               <Col lg={8} md={10} sm={10} xs={24}>
-                <FormItem {...formItemLayout} label="作者" name="author">
+                <FormItem {...formItemLayout} label="Author" name="author">
                   <Select
-                    placeholder="不限"
+                  // todo! change to defaultvalue
+                    placeholder="Any"
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                     options={[
                       {
-                        label: '王昭君',
+                        label: 'Lisa',
                         value: 'lisa',
                       },
                     ]}
@@ -131,20 +132,21 @@ const Projects: FC = () => {
                 </FormItem>
               </Col>
               <Col lg={8} md={10} sm={10} xs={24}>
-                <FormItem {...formItemLayout} label="好评度" name="rate">
+                <FormItem {...formItemLayout} label="Rating" name="rate">
                   <Select
-                    placeholder="不限"
+                  // todo! change to defaultvalue
+                    placeholder="Any"
                     style={{
                       maxWidth: 200,
                       width: '100%',
                     }}
                     options={[
                       {
-                        label: '优秀',
+                        label: 'Good',
                         value: 'good',
                       },
                       {
-                        label: '普通',
+                        label: 'Normal',
                         value: 'normal',
                       },
                     ]}

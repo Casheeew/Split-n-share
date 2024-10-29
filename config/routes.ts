@@ -44,36 +44,8 @@ export default [
     ],
   },
   {
-    path: '/dashboard',
-    name: 'dashboard',
-    icon: 'dashboard',
-    routes: [
-      {
-        path: '/dashboard',
-        redirect: '/dashboard/analysis',
-      },
-      {
-        name: 'analysis',
-        icon: 'smile',
-        path: '/dashboard/analysis',
-        component: './dashboard/analysis',
-      },
-      {
-        name: 'monitor',
-        icon: 'smile',
-        path: '/dashboard/monitor',
-        component: './dashboard/monitor',
-      },
-      {
-        name: 'workplace',
-        icon: 'smile',
-        path: '/dashboard/workplace',
-        component: './dashboard/workplace',
-      },
-    ],
-  },
-  {
     path: '/form',
+    layout: false,
     icon: 'form',
     name: 'form',
     routes: [
@@ -161,6 +133,7 @@ export default [
   },
   {
     path: '/profile',
+    layout: false,
     name: 'profile',
     icon: 'profile',
     routes: [
@@ -184,6 +157,7 @@ export default [
   },
   {
     name: 'result',
+    layout: false,
     icon: 'CheckCircleOutlined',
     path: '/result',
     routes: [
@@ -207,6 +181,7 @@ export default [
   },
   {
     name: 'exception',
+    layout: false,
     icon: 'warning',
     path: '/exception',
     routes: [
@@ -259,7 +234,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/dashboard/analysis',
+    redirect: '/list/search/projects',
   },
   {
     component: '404',

@@ -1,6 +1,5 @@
 import { PageContainer } from '@ant-design/pro-components';
 import { history, Outlet, useLocation, useMatch } from '@umijs/max';
-import { Input } from 'antd';
 import type { FC } from 'react';
 
 type SearchProps = {
@@ -43,10 +42,10 @@ const Search: FC<SearchProps> = () => {
     }
   };
 
-  const handleFormSubmit = (value: string) => {
-    // eslint-disable-next-line no-console
-    console.log(value);
-  };
+  // const handleFormSubmit = (value: string) => {
+  //   // eslint-disable-next-line no-console
+  //   console.log(value);
+  // };
 
   const getTabKey = () => {
     const tabKey = location.pathname.substring(location.pathname.lastIndexOf('/') + 1);
@@ -58,17 +57,18 @@ const Search: FC<SearchProps> = () => {
 
   return (
     <PageContainer
-      content={
-        <div style={{ textAlign: 'center' }}>
-          <Input.Search
-            placeholder="请输入"
-            enterButton="搜索"
-            size="large"
-            onSearch={handleFormSubmit}
-            style={{ maxWidth: 522, width: '100%' }}
-          />
-        </div>
-      }
+      // content={
+      //   // todo! interesting
+      //   <div style={{ textAlign: 'center' }}>
+      //     <Input.Search
+      //       placeholder="请输入"
+      //       enterButton="搜索"
+      //       size="large"
+      //       onSearch={handleFormSubmit}
+      //       style={{ maxWidth: 522, width: '100%' }}
+      //     />
+      //   </div>
+      // }
       tabList={tabList}
       tabActiveKey={getTabKey()}
       onTabChange={handleTabChange}
