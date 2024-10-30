@@ -1,20 +1,22 @@
 import { ClusterOutlined, ContactsOutlined, HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
-import { Avatar, Card, Col, Divider, Input, InputRef, Row, Tag } from 'antd';
+import { Avatar, Button, Card, Col, Divider, Input, InputRef, Row, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import useStyles from './Center.style';
 import Applications from './components/Applications';
 import Articles from './components/Articles';
 import Projects from './components/Projects';
-import type { CurrentUser, tabKeyType, TagType } from './data.d';
-import { queryCurrent } from './service';
+import Cobuyers from './components/Cobuyers';
+import type { CurrentUser, ListItemDataType, tabKeyType, TagType } from './data.d';
+import { queryCurrent, queryFakeList } from './service';
+
 const operationTabList = [
   {
-    key: 'articles',
+    key: 'received_reviews',
     tab: (
       <span>
-        文章{' '}
+        Received Reviews{' '}
         <span
           style={{
             fontSize: 14,
@@ -26,10 +28,10 @@ const operationTabList = [
     ),
   },
   {
-    key: 'applications',
+    key: 'given_reviews',
     tab: (
       <span>
-        应用{' '}
+        Given Reviews{' '}
         <span
           style={{
             fontSize: 14,
@@ -41,10 +43,10 @@ const operationTabList = [
     ),
   },
   {
-    key: 'projects',
+    key: 'postings',
     tab: (
       <span>
-        项目{' '}
+        Postings{' '}
         <span
           style={{
             fontSize: 14,
@@ -91,7 +93,7 @@ const TagList: React.FC<{
   };
   return (
     <div className={styles.tags}>
-      <div className={styles.tagsTitle}>标签</div>
+      <div className={styles.tagsTitle}>Tags</div>
       {(tags || []).concat(newTags).map((item) => (
         <Tag key={item.key}>{item.label}</Tag>
       ))}
@@ -122,13 +124,21 @@ const TagList: React.FC<{
     </div>
   );
 };
+
 const Center: React.FC = () => {
   const { styles } = useStyles();
-  const [tabKey, setTabKey] = useState<tabKeyType>('articles');
+  const [tabKey, setTabKey] = useState<tabKeyType>('received_reviews');
 
   //  获取用户信息
   const { data: currentUser, loading } = useRequest(() => {
     return queryCurrent();
+  });
+
+  // 获取tab列表数据
+  const { data: listData } = useRequest(() => {
+    return queryFakeList({
+      count: 3,
+    });
   });
 
   //  渲染用户信息
@@ -181,22 +191,23 @@ const Center: React.FC = () => {
   };
 
   // 渲染tab切换
-  const renderChildrenByTabKey = (tabValue: tabKeyType) => {
-    if (tabValue === 'projects') {
-      return <Projects />;
+  const renderChildrenByTabKey = (tabValue: tabKeyType, data: ListItemDataType[]) => {
+    if (tabValue === 'postings') {
+      return <Projects data={data} />;
     }
-    if (tabValue === 'applications') {
-      return <Applications />;
+    if (tabValue === 'given_reviews') {
+      return <Applications data={data} />;
     }
-    if (tabValue === 'articles') {
-      return <Articles />;
+    if (tabValue === 'received_reviews') {
+      return <Articles data={data} />;
     }
     return null;
   };
+
   return (
     <GridContent>
       <Row gutter={24}>
-        <Col lg={7} md={24}>
+        <Col lg={6} md={24}>
           <Card
             bordered={false}
             style={{
@@ -221,7 +232,7 @@ const Center: React.FC = () => {
                   dashed
                 />
                 <div className={styles.team}>
-                  <div className={styles.teamTitle}>团队</div>
+                  <div className={styles.teamTitle}>Organizations</div>
                   <Row gutter={36}>
                     {currentUser.notice &&
                       currentUser.notice.map((item) => (
@@ -247,8 +258,16 @@ const Center: React.FC = () => {
             onTabChange={(_tabKey: string) => {
               setTabKey(_tabKey as tabKeyType);
             }}
+            tabBarExtraContent={
+              <Button type='primary' size='large'>Write a review</Button>
+            }
           >
-            {renderChildrenByTabKey(tabKey)}
+            {renderChildrenByTabKey(tabKey, (listData?.list || []))}
+          </Card>
+          <br/>
+
+          <Card title="Past Cobuyers">
+            <Cobuyers data={(listData?.list || [])} />
           </Card>
         </Col>
       </Row>

@@ -15,13 +15,24 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Ant Design Pro',
+  title: 'Split-n-Share',
   pwa: true,
-  logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+  logo: 'https://i.postimg.cc/qBYCht0x/split-n-share-icon.jpg',
   iconfontUrl: '',
   token: {
     // 参见ts声明，demo 见文档，通过token 修改样式
     //https://procomponents.ant.design/components/layout#%E9%80%9A%E8%BF%87-token-%E4%BF%AE%E6%94%B9%E6%A0%B7%E5%BC%8F
+    header: {
+      colorHeaderTitle: "rgba(255,255,255,1)",
+      colorTextMenuSelected: "rgba(255,255,255,1)",
+      colorTextMenu: "rgba(255,255,255,1)",
+      colorTextRightActionsItem: "rgba(255,255,255,1)",
+      colorBgRightActionsItemHover: "rgba(255,255,255,0.15)",
+      colorTextMenuSecondary: "rgba(255,255,255,1)",
+      colorTextMenuActive: "rgba(255,255,255,0.75)",
+      colorBgHeader: "#D0011B",
+
+    }
   },
 };
 

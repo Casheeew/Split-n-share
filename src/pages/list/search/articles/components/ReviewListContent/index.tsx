@@ -2,7 +2,10 @@ import { Avatar } from 'antd';
 import dayjs from 'dayjs';
 import React from 'react';
 import useStyles from './index.style';
-type ArticleListContentProps = {
+
+// any changes to this page is also needed in accounts center
+
+type ReviewListContentProps = {
   data: {
     content: React.ReactNode;
     updatedAt: number;
@@ -11,7 +14,7 @@ type ArticleListContentProps = {
     href: string;
   };
 };
-const ArticleListContent: React.FC<ArticleListContentProps> = ({
+const ReviewListContent: React.FC<ReviewListContentProps> = ({
   data: { content, updatedAt, avatar, owner, href },
 }) => {
   const { styles } = useStyles();
@@ -20,10 +23,10 @@ const ArticleListContent: React.FC<ArticleListContentProps> = ({
       <div className={styles.description}>{content}</div>
       <div className={styles.extra}>
         <Avatar src={avatar} size="small" />
-        <a href={href}>{owner}</a> 发布在 <a href={href}>{href}</a>
+        <a href={href}>{owner}</a> left a review
         <em>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm')}</em>
       </div>
     </div>
   );
 };
-export default ArticleListContent;
+export default ReviewListContent;

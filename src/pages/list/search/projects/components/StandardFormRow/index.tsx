@@ -12,7 +12,7 @@ type StandardFormRowProps = {
 const StandardFormRow: React.FC<StandardFormRowProps> = ({
   title,
   children,
-  last,
+  last, // no bottom padding / margin
   block,
   grid,
   ...rest

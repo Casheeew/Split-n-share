@@ -5,7 +5,7 @@ import { DefaultOptionType } from 'antd/es/select';
 import type { FC } from 'react';
 import React, { useMemo } from 'react';
 import { categoryOptions } from '../../mock';
-import ArticleListContent from './components/ArticleListContent';
+import ReviewListContent from './components/ReviewListContent';
 import StandardFormRow from './components/StandardFormRow';
 import TagSelect from './components/TagSelect';
 import type { ListItemDataType } from './data.d';
@@ -16,7 +16,7 @@ const FormItem = Form.Item;
 
 const pageSize = 5;
 
-const Articles: FC = () => {
+const Reviews: FC = () => {
   const [form] = Form.useForm();
 
   const { styles } = useStyles();
@@ -230,7 +230,7 @@ const Articles: FC = () => {
                   </span>
                 }
               />
-              <ArticleListContent data={item} />
+              <ReviewListContent data={item} />
             </List.Item>
           )}
         />
@@ -239,4 +239,4 @@ const Articles: FC = () => {
   );
 };
 
-export default Articles;
+export default Reviews;

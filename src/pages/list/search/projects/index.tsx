@@ -1,5 +1,5 @@
 import { useRequest } from '@umijs/max';
-import { Card, Col, Form, List, Row, Select, Typography } from 'antd';
+import { Card, Col, Form, List, Row, Select, Typography, Button } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import type { FC } from 'react';
@@ -95,7 +95,7 @@ const Projects: FC = () => {
           }}
         >
           <StandardFormRow
-            title="所属类目"
+            title="Categories"
             block
             style={{
               paddingBottom: 11,
@@ -111,7 +111,7 @@ const Projects: FC = () => {
               </TagSelect>
             </FormItem>
           </StandardFormRow>
-          <StandardFormRow title="其它选项" grid last>
+          <StandardFormRow title="Filter" grid last>
             <Row gutter={16}>
               <Col lg={8} md={10} sm={10} xs={24}>
                 <FormItem {...formItemLayout} label="Author" name="author">
@@ -152,6 +152,10 @@ const Projects: FC = () => {
                     ]}
                   />
                 </FormItem>
+              </Col>
+              {/* todo! hookup create post action */}
+              <Col lg={8} md={10} sm={10} xs={24} style={{display: 'flex', justifyContent: 'flex-end'}}>
+                    <Button type="primary" size='large'>Create Posting</Button>
               </Col>
             </Row>
           </StandardFormRow>

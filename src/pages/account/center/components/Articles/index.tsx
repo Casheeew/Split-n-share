@@ -1,12 +1,15 @@
 import { LikeOutlined, MessageFilled, StarTwoTone } from '@ant-design/icons';
-import { useRequest } from '@umijs/max';
 import { List, Tag } from 'antd';
 import React from 'react';
 import type { ListItemDataType } from '../../data.d';
-import { queryFakeList } from '../../service';
-import ArticleListContent from '../ArticleListContent';
+import ReviewListContent from '../ReviewListContent';
 import useStyles from './index.style';
-const Articles: React.FC = () => {
+
+export type ReviewsProps = {
+  data: ListItemDataType[],
+}
+
+const Articles: React.FC<ReviewsProps> = ({data: listData}) => {
   const { styles } = useStyles();
   const IconText: React.FC<{
     icon: React.ReactNode;
@@ -17,46 +20,40 @@ const Articles: React.FC = () => {
     </span>
   );
 
-  // 获取tab列表数据
-  const { data: listData } = useRequest(() => {
-    return queryFakeList({
-      count: 30,
-    });
-  });
   return (
-    <List<ListItemDataType>
-      size="large"
-      className={styles.articleList}
-      rowKey="id"
-      itemLayout="vertical"
-      dataSource={listData?.list || []}
-      renderItem={(item) => (
-        <List.Item
-          key={item.id}
-          actions={[
-            <IconText key="star" icon={<StarTwoTone />} text={item.star} />,
-            <IconText key="like" icon={<LikeOutlined />} text={item.like} />,
-            <IconText key="message" icon={<MessageFilled />} text={item.message} />,
-          ]}
-        >
-          <List.Item.Meta
-            title={
-              <a className={styles.listItemMetaTitle} href={item.href}>
-                {item.title}
-              </a>
-            }
-            description={
-              <span>
-                <Tag>Ant Design</Tag>
-                <Tag>设计语言</Tag>
-                <Tag>蚂蚁金服</Tag>
-              </span>
-            }
-          />
-          <ArticleListContent data={item} />
-        </List.Item>
-      )}
-    />
+      <List<ListItemDataType>
+        size="large"
+        className={styles.articleList}
+        rowKey="id"
+        itemLayout="vertical"
+        dataSource={listData}
+        renderItem={(item) => (
+          <List.Item
+            key={item.id}
+            actions={[
+              <IconText key="star" icon={<StarTwoTone />} text={item.star} />,
+              <IconText key="like" icon={<LikeOutlined />} text={item.like} />,
+              <IconText key="message" icon={<MessageFilled />} text={item.message} />,
+            ]}
+          >
+            <List.Item.Meta
+              title={
+                <a className={styles.listItemMetaTitle} href={item.href}>
+                  {item.title}
+                </a>
+              }
+              description={
+                <span>
+                  {/* todo! add tag logic */}
+                  <Tag>Food & Drinks</Tag>
+                  <Tag>Areum-gwan</Tag>
+                </span>
+              }
+            />
+            <ReviewListContent data={item} />
+          </List.Item>
+        )}
+      />
   );
 };
 export default Articles;

@@ -4,13 +4,16 @@ import {
   EllipsisOutlined,
   ShareAltOutlined,
 } from '@ant-design/icons';
-import { useRequest } from '@umijs/max';
 import { Avatar, Card, Dropdown, List, Tooltip } from 'antd';
 import numeral from 'numeral';
 import React from 'react';
 import type { ListItemDataType } from '../../data.d';
-import { queryFakeList } from '../../service';
 import useStyles from './index.style';
+
+export type ApplicationsProps = {
+  data: ListItemDataType[],
+} 
+
 export function formatWan(val: number) {
   const v = val * 1;
   if (!v || Number.isNaN(v)) return '';
@@ -35,14 +38,9 @@ export function formatWan(val: number) {
   }
   return result;
 }
-const Applications: React.FC = () => {
+
+const Applications: React.FC<ApplicationsProps> = ({data: listData}) => {
   const { styles: stylesApplications } = useStyles();
-  // 获取tab列表数据
-  const { data: listData } = useRequest(() => {
-    return queryFakeList({
-      count: 30,
-    });
-  });
 
   const CardInfo: React.FC<{
     activeUser: React.ReactNode;
@@ -50,11 +48,11 @@ const Applications: React.FC = () => {
   }> = ({ activeUser, newUser }) => (
     <div className={stylesApplications.cardInfo}>
       <div>
-        <p>活跃用户</p>
+        <p>Active User</p>
         <p>{activeUser}</p>
       </div>
       <div>
-        <p>新增用户</p>
+        <p>New User</p>
         <p>{newUser}</p>
       </div>
     </div>
@@ -72,7 +70,7 @@ const Applications: React.FC = () => {
         sm: 2,
         xs: 1,
       }}
-      dataSource={listData?.list || []}
+      dataSource={listData}
       renderItem={(item) => (
         <List.Item key={item.id}>
           <Card
@@ -81,13 +79,13 @@ const Applications: React.FC = () => {
               paddingBottom: 20,
             }}
             actions={[
-              <Tooltip key="download" title="下载">
+              <Tooltip title="Download" key="download">
                 <DownloadOutlined />
               </Tooltip>,
-              <Tooltip title="编辑" key="edit">
+              <Tooltip title="Edit" key="edit">
                 <EditOutlined />
               </Tooltip>,
-              <Tooltip title="分享" key="share">
+              <Tooltip title="Share" key="share">
                 <ShareAltOutlined />
               </Tooltip>,
               <Dropdown
