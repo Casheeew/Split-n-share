@@ -1,5 +1,5 @@
 import { AvatarDropdown, AvatarName, Footer, SelectLang, Question } from '@/components';
-import { CommentOutlined, LinkOutlined } from '@ant-design/icons';
+import { LinkOutlined } from '@ant-design/icons';
 import type { Settings as LayoutSettings } from '@ant-design/pro-components';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RequestConfig, RunTimeLayoutConfig } from '@umijs/max';
@@ -7,11 +7,12 @@ import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
-import { Input, FloatButton } from 'antd';
-
-
-import "./app.css";
+import { Avatar, Card, Col, Input, List, Row } from 'antd';
 import { Notification } from './components/RightContent';
+
+import "react-chat-elements/dist/main.css"
+import "./app.css";
+import dayjs from 'dayjs';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -58,15 +59,15 @@ const { Search } = Input;
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     actionsRender: () => [
-    <Search style={{width: "55vw"}} key="Input" onSearch={(value) => {
-      console.log(value);
-      // todo! search
-      // todo! change icon
-    }} placeholder="Search for anything on Split-n'-share!" />,
-    <SelectLang key="SelectLang" />,
-    <Question key="help" />,
-    <Notification key="notification" />,
-  ],
+      <Search style={{ width: "55vw" }} key="Input" onSearch={(value) => {
+        console.log(value);
+        // todo! search
+        // todo! change icon
+      }} placeholder="Search for anything on Split-n'-share!" />,
+      <SelectLang key="SelectLang" />,
+      <Question key="help" />,
+      <Notification key="notification" />,
+    ],
     avatarProps: {
       // todo! login sequence
       src: initialState?.currentUser?.avatar,
@@ -105,11 +106,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     links: isDev
       ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
+        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+          <LinkOutlined />
+          <span>OpenAPI 文档</span>
+        </Link>,
+      ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -133,7 +134,62 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
               }}
             />
           )}
-          <FloatButton icon={<CommentOutlined />}  badge={{ dot: true }} tooltip={<div>Chat</div>} />
+          {/* <div className='chat-widget'>
+            <Widget
+              emojis={true} 
+              handleSubmit={
+                // todo!
+                () => {}
+              } 
+              />
+          </div> */}
+
+          <div className="rcw-widget-container">
+            <Card title="Chat" className="rcw-conversation-container">
+              <div style={{
+                "minHeight": "400px"
+              }}>
+                <Row gutter={24}>
+                  <Col lg={8} md={24}>
+                    <List>
+                      <List.Item>
+                        <Avatar src={'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png'} size="small" />
+                        {/* aaaa
+                          <em>{dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('YYYY-MM-DD HH:mm')}</em> */}
+                        <div>
+                          <Row gutter={24}>
+                            <Col lg={16} md={24}>
+                              Jan
+                            </Col>
+                            <Col>
+                              {dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm')}
+                            </Col>
+                          </Row>
+                          {/* todo! current */}
+                          <Row gutter={24}>
+                            <Col lg={20} md={24}>
+                              {`I'd be down for so...`} 
+                            </Col>
+                            <Col>
+                            </Col>
+                          </Row>
+                        </div>
+                      </List.Item>
+                      <List.Item>
+
+                      </List.Item>
+                      <List.Item>
+
+                      </List.Item>
+                    </List>
+                  </Col>
+                  <Col lg={16} md={24}>
+                  
+                  </Col>
+                </Row>
+              </div>
+            </Card>
+          </div>
         </>
       );
     },
