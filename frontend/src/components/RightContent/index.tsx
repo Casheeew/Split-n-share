@@ -1,5 +1,6 @@
-import { QuestionCircleOutlined, BellOutlined } from '@ant-design/icons';
+import { QuestionCircleOutlined, BellOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { SelectLang as UmiSelectLang } from '@umijs/max';
+import HeaderDropdown from '../HeaderDropdown';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -12,17 +13,27 @@ export const SelectLang = () => {
 export const Notification = () => {
   // todo! open notifications
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: 26,
-      }}
-      onClick={() => {
-        window.open('https://pro.ant.design/docs/getting-started');
+    <HeaderDropdown
+      menu={{
+        selectedKeys: [],
+        onClick: () => { },
+        items: [{
+          key: 'info',
+          icon: <InfoCircleOutlined />,
+          label: 'No notifications.',
+          disabled: true,
+        },],
       }}
     >
-      <BellOutlined />
-    </div>
+      <div
+        style={{
+          display: 'flex',
+          height: 26,
+        }}
+      >
+        <BellOutlined />
+      </div>
+    </HeaderDropdown>
   );
 };
 export const Question = () => {
@@ -32,9 +43,6 @@ export const Question = () => {
       style={{
         display: 'flex',
         height: 26,
-      }}
-      onClick={() => {
-        window.open('https://pro.ant.design/docs/getting-started');
       }}
     >
       <QuestionCircleOutlined />

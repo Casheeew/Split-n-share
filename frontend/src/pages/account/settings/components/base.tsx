@@ -43,7 +43,7 @@ const BaseView: React.FC = () => {
     </>
   );
   const { data: currentUser, loading } = useRequest(() => {
-    return queryCurrent();
+    return queryCurrentUser();
   });
   const getAvatarURL = () => {
     if (currentUser) {

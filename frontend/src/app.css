@@ -14,8 +14,8 @@
 
 .rcw-conversation-container {
   position: relative;
-  min-width: calc(600px + 10vw);
-  max-width: 70vw;
+  min-width: 90vw;
+  max-width: 90vw;
   border-radius: 10px;
   box-shadow: 0px 2px 10px 1px;
 
@@ -35,6 +35,34 @@
       opacity 0.3s ease,
       transform 0.3s ease;
     pointer-events: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .rcw-conversation-container {
+    position: relative;
+    min-width: calc(200px + 30vw);
+    max-width: calc(200px + 30vw);
+    border-radius: 10px;
+    box-shadow: 0px 2px 10px 1px;
+
+    &.active {
+      transform: translateY(0px);
+      opacity: 1;
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+    }
+
+    &.hidden {
+      z-index: -1;
+      transform: translateY(10px);
+      opacity: 0;
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
+      pointer-events: none;
+    }
   }
 }
 

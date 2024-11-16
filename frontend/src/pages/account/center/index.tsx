@@ -1,15 +1,15 @@
 import { ClusterOutlined, ContactsOutlined, HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
-import { Avatar, Button, Card, Col, Divider, Input, InputRef, Row, Tag } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Avatar, Button, Card, Col, Divider, Form, GetProps, Input, InputRef, message, Modal, Rate, Row, Tag } from 'antd';
+import React, { FC, useRef, useState } from 'react';
 import useStyles from './Center.style';
 import Applications from './components/Applications';
 import Articles from './components/Articles';
 import Projects from './components/Projects';
 import Cobuyers from './components/Cobuyers';
 import type { CurrentUser, ListItemDataType, tabKeyType, TagType } from './data.d';
-import { queryCurrent, queryFakeList } from './service';
+import { queryCurrentUser, queryFakeList, createReview as apiCreateReview } from './service';
 
 const operationTabList = [
   {
@@ -46,7 +46,7 @@ const operationTabList = [
     key: 'postings',
     tab: (
       <span>
-        Postings{' '}
+        Your Postings{' '}
         <span
           style={{
             fontSize: 14,
@@ -125,13 +125,112 @@ const TagList: React.FC<{
   );
 };
 
+type ModalProps = GetProps<typeof Modal> & {
+  open: boolean;
+  onOk: (form: any) => void;
+};
+
+export type StoreValue = any;
+export type Store = Record<string, StoreValue>;
+
+// type FormInstance = GetRef<typeof Form>;
+
+// const useResetFormOnCloseModal = ({ form, open }: { form: FormInstance; open: boolean }) => {
+//   const prevOpenRef = useRef<boolean>();
+//   useEffect(() => {
+//     prevOpenRef.current = open;
+//   }, [open]);
+//   const prevOpen = prevOpenRef.current;
+
+//   useEffect(() => {
+//     if (!open && prevOpen) {
+//       form.resetFields();
+//     }
+//   }, [form, prevOpen, open]);
+// };
+
+const WriteReviewModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel, loading }) => {
+  const [form] = Form.useForm();
+
+  const onOk = () => {
+    handleOk(form);
+  }
+
+  // uncomment if resetting form on modal close is desired
+
+  // useResetFormOnCloseModal({
+  //   form,
+  //   open,
+  // });
+
+  return (
+    <Modal
+      width={800}
+      open={open}
+      title="Write Review"
+      onOk={onOk}
+      onCancel={onCancel}
+      footer={[
+        <Button key="submit" type="primary" loading={loading} onClick={onOk}>
+          Submit
+        </Button>,
+      ]}
+    >
+      <Divider />
+      <Form form={form} layout="vertical" name="writeReviewForm">
+        <Form.Item name="review" label="Write your review" rules={[{ required: true, message: 'Please note your experience.' }]}>
+          <Input.TextArea
+            autoSize={{ minRows: 6, maxRows: 12 }}
+            placeholder='Write about your experience.' />
+        </Form.Item>
+
+        <Form.Item name="rating" label={<><Tag color="warning">optional</Tag> Rate your experience</>}>
+          <Rate />
+        </Form.Item>
+      </Form>
+    </Modal>
+  )
+}
+
 const Center: React.FC = () => {
   const { styles } = useStyles();
+
   const [tabKey, setTabKey] = useState<tabKeyType>('received_reviews');
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const { loading: submitting, run: createReview } = useRequest<{
+    data: any;
+  }>(apiCreateReview, {
+    manual: true,
+    onSuccess: async (data) => {
+      if (data.status === 'success') {
+        message.success('Created successfully!');
+      }
+      else {
+        console.error('An error occurred.');
+      }
+    },
+  });
+
+  const onFinish = (values: Store) => {
+    // console.log(values);
+    // todo! fill values with owner id and so on
+    // todo! reset on submit
+    createReview(values);
+  }
+
+  const showModal = () => {
+    setModalOpen(true);
+  }
+
+  const handleModalCancel = () => {
+    setModalOpen(false);
+  }
+
 
   //  获取用户信息
   const { data: currentUser, loading } = useRequest(() => {
-    return queryCurrent();
+    return queryCurrentUser();
   });
 
   // 获取tab列表数据
@@ -193,6 +292,7 @@ const Center: React.FC = () => {
   // 渲染tab切换
   const renderChildrenByTabKey = (tabValue: tabKeyType, data: ListItemDataType[]) => {
     if (tabValue === 'postings') {
+      // todo!
       return <Projects data={data} />;
     }
     if (tabValue === 'given_reviews') {
@@ -205,73 +305,92 @@ const Center: React.FC = () => {
   };
 
   return (
-    <GridContent>
-      <Row gutter={24}>
-        <Col lg={6} md={24}>
-          <Card
-            bordered={false}
-            style={{
-              marginBottom: 24,
-            }}
-            loading={loading}
-          >
-            {!loading && currentUser && (
-              <div>
-                <div className={styles.avatarHolder}>
-                  <img alt="" src={currentUser.avatar} />
-                  <div className={styles.name}>{currentUser.name}</div>
-                  <div>{currentUser?.signature}</div>
-                </div>
-                {renderUserInfo(currentUser)}
-                <Divider dashed />
-                <TagList tags={currentUser.tags || []} />
-                <Divider
-                  style={{
-                    marginTop: 16,
-                  }}
-                  dashed
-                />
-                <div className={styles.team}>
-                  <div className={styles.teamTitle}>Organizations</div>
-                  <Row gutter={36}>
-                    {currentUser.notice &&
-                      currentUser.notice.map((item) => (
-                        <Col key={item.id} lg={24} xl={12}>
-                          <a href={item.href}>
-                            <Avatar size="small" src={item.logo} />
-                            {item.member}
-                          </a>
-                        </Col>
-                      ))}
-                  </Row>
-                </div>
-              </div>
-            )}
-          </Card>
-        </Col>
-        <Col lg={17} md={24}>
-          <Card
-            className={styles.tabsCard}
-            bordered={false}
-            tabList={operationTabList}
-            activeTabKey={tabKey}
-            onTabChange={(_tabKey: string) => {
-              setTabKey(_tabKey as tabKeyType);
-            }}
-            tabBarExtraContent={
-              <Button type='primary' size='large'>Write a review</Button>
-            }
-          >
-            {renderChildrenByTabKey(tabKey, (listData?.list || []))}
-          </Card>
-          <br/>
+    <>
+      <GridContent>
+        <Row gutter={24}>
+          <Col lg={6} md={24}>
 
-          <Card title="Past Cobuyers">
-            <Cobuyers data={(listData?.list || [])} />
-          </Card>
-        </Col>
-      </Row>
-    </GridContent>
+            <Card
+              bordered={false}
+              style={{
+                marginBottom: 24,
+              }}
+              loading={loading}
+            >
+              {!loading && currentUser && (
+                <div>
+                  <div className={styles.avatarHolder}>
+                    <img alt="" src={currentUser.profile_picture} />
+                    <div className={styles.name}>{`${currentUser.first_name} ${currentUser.last_name}`}</div>
+                    <div>{currentUser?.desc}</div>
+                  </div>
+                  {renderUserInfo(currentUser)}
+                  {/* <Divider dashed /> */}
+                  {/* <TagList tags={currentUser.tags || []} /> */}
+                  <Divider
+                    style={{
+                      marginTop: 16,
+                    }}
+                    dashed
+                  />
+                  {/* <div className={styles.team}>
+                    <div className={styles.teamTitle}>Organizations</div>
+                    <Row gutter={36}>
+                      {currentUser.notice &&
+                        currentUser.notice.map((item) => (
+                          <Col key={item.id} lg={24} xl={12}>
+                            <a href={item.href}>
+                              <Avatar size="small" src={item.logo} />
+                              {item.member}
+                            </a>
+                          </Col>
+                        ))}
+                    </Row>
+                  </div> */}
+                </div>
+              )}
+            </Card>
+          </Col>
+          <Col lg={17} md={24}>
+            <Card title="Your Past Cobuyers">
+              <Cobuyers data={(listData?.list || [])} />
+            </Card>
+            <br />
+            <Card
+              className={styles.tabsCard}
+              bordered={false}
+              tabList={operationTabList}
+              activeTabKey={tabKey}
+              onTabChange={(_tabKey: string) => {
+                setTabKey(_tabKey as tabKeyType);
+              }}
+              tabBarExtraContent={
+                <Button type='primary' size='large' onClick={showModal}>Write a review</Button>
+              }
+            >
+              {renderChildrenByTabKey(tabKey, (listData?.list || []))}
+            </Card>
+          </Col>
+        </Row>
+      </GridContent>
+      <Form.Provider
+        onFormFinish={(name, { values }) => {
+          if (name === 'writeReviewForm') {
+            onFinish(values);
+            setModalOpen(false);
+          }
+        }}
+      >
+        <WriteReviewModalForm
+          open={modalOpen}
+          onOk={(form) => {
+            form.submit();
+          }}
+          onCancel={handleModalCancel}
+          loading={submitting}
+        />
+      </Form.Provider>
+    </>
   );
 };
 export default Center;

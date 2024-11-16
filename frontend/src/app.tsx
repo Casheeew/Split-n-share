@@ -7,12 +7,11 @@ import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
-import { Avatar, Card, Col, Input, List, Row } from 'antd';
+import { Input } from 'antd';
 import { Notification } from './components/RightContent';
+import ChatWidget from './components/ChatWidget';
 
-import "react-chat-elements/dist/main.css"
 import "./app.css";
-import dayjs from 'dayjs';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -31,7 +30,7 @@ export async function getInitialState(): Promise<{
       const msg = await queryCurrentUser({
         skipErrorHandler: true,
       });
-      return msg.data;
+      return msg.data.data;
     } catch (error) {
       history.push(loginPath);
     }
@@ -59,7 +58,7 @@ const { Search } = Input;
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     actionsRender: () => [
-      <Search style={{ width: "55vw" }} key="Input" onSearch={(value) => {
+      <Search style={{ width: "55vw", margin: '24px' }} key="Input" onSearch={(value) => {
         console.log(value);
         // todo! search
         // todo! change icon
@@ -70,10 +69,10 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     ],
     avatarProps: {
       // todo! login sequence
-      src: initialState?.currentUser?.avatar,
+      src: initialState?.currentUser?.profile_picture,
       title: <AvatarName />,
       render: (_, avatarChildren) => {
-        return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
+        return <AvatarDropdown key='avatarDropdown' menu={true}>{avatarChildren}</AvatarDropdown>;
       },
     },
     footerRender: () => <Footer />,
@@ -112,7 +111,6 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         </Link>,
       ]
       : [],
-    menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     // 增加一个 loading 的状态
@@ -144,52 +142,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
               />
           </div> */}
 
-          <div className="rcw-widget-container">
-            <Card title="Chat" className="rcw-conversation-container">
-              <div style={{
-                "minHeight": "400px"
-              }}>
-                <Row gutter={24}>
-                  <Col lg={8} md={24}>
-                    <List>
-                      <List.Item>
-                        <Avatar src={'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png'} size="small" />
-                        {/* aaaa
-                          <em>{dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('YYYY-MM-DD HH:mm')}</em> */}
-                        <div>
-                          <Row gutter={24}>
-                            <Col lg={16} md={24}>
-                              Jan
-                            </Col>
-                            <Col>
-                              {dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm')}
-                            </Col>
-                          </Row>
-                          {/* todo! current */}
-                          <Row gutter={24}>
-                            <Col lg={20} md={24}>
-                              {`I'd be down for so...`} 
-                            </Col>
-                            <Col>
-                            </Col>
-                          </Row>
-                        </div>
-                      </List.Item>
-                      <List.Item>
-
-                      </List.Item>
-                      <List.Item>
-
-                      </List.Item>
-                    </List>
-                  </Col>
-                  <Col lg={16} md={24}>
-                  
-                  </Col>
-                </Row>
-              </div>
-            </Card>
-          </div>
+          <ChatWidget />
         </>
       );
     },
@@ -203,6 +156,17 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: 'https://proapi.azurewebsites.net',
+  baseURL: 'http://localhost:3080',
   ...errorConfig,
+  requestInterceptors: [
+    function (config: any) {
+      // config.headers["TENANT-ID"] = xTenantId;
+      const token = localStorage.getItem('token');
+
+      if (token) {
+        config.headers.Authorization = `${token}`;
+      }
+      return config;
+    },
+  ],
 };

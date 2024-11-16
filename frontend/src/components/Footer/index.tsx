@@ -8,24 +8,18 @@ const Footer: React.FC = () => {
       style={{
         background: 'none',
       }}
-      copyright="Powered by Ant Desgin"
+      copyright="2024 Tiramisu"
       links={[
         {
-          key: 'Ant Design Pro',
-          title: 'Ant Design Pro',
-          href: 'https://pro.ant.design',
+          key: 'Tiramisu',
+          title: <>2024 Team Tiramisu <GithubOutlined /></>,
+          href: 'https://github.com/Casheeew/split-n-share',
           blankTarget: true,
         },
         {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/ant-design/ant-design-pro',
-          blankTarget: true,
-        },
-        {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          key: 'CS473',
+          title: 'CS473 Social Computing',
+          href: 'https://social.cstlab.org/',
           blankTarget: true,
         },
       ]}

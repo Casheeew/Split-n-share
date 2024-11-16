@@ -12,8 +12,9 @@ export const deleteOne = async (model: Model<any>, req: Request, res: Response, 
         }
 
         res.status(204).json({
-            status: 'success',
-            data: null
+            data: {
+                status: 'success',
+            }
         });
     } catch (error) {
         next(error);
@@ -32,9 +33,9 @@ export const updateOne = async (model: Model<any>, req: Request, res: Response, 
         }
 
         res.status(200).json({
-            status: 'success',
             data: {
-                doc
+                status: 'success',
+                data: doc,
             }
         });
 
@@ -48,9 +49,9 @@ export const createOne = async (model: Model<any>, req: Request, res: Response, 
         const doc = await model.create(req.body);
 
         res.status(201).json({
-            status: 'success',
             data: {
-                doc
+                status: 'success',
+                data: doc,
             }
         });
 
@@ -67,11 +68,18 @@ export const getOne = async (model: Model<any>, req: Request, res: Response, nex
             return next(new AppError(404, 'fail', 'No document found with that id'));
         }
 
-        res.status(200).json({
-            status: 'success',
+        console.log({
             data: {
-                doc
-            }
+                status: 'success',
+                data: doc,
+            },
+        })
+
+        res.status(200).json({
+            data: {
+                status: 'success',
+                data: doc,
+            },
         });
     } catch (error) {
         next(error);
@@ -81,8 +89,8 @@ export const getOne = async (model: Model<any>, req: Request, res: Response, nex
 export const getAll = async (model: Model<any>, req: Request, res: Response, next: NextFunction) => {
     try {
         const features = new APIFeatures(model.find(), req.query)
-        .sort()
-        .paginate();
+            .sort()
+            .paginate();
 
         const doc = await features.query;
 
@@ -90,12 +98,13 @@ export const getAll = async (model: Model<any>, req: Request, res: Response, nex
             status: 'success',
             results: doc.length,
             data: {
-                data: doc
+                status: 'success',
+                results: doc.length,
+                data: doc,
             }
         });
 
     } catch (error) {
         next(error);
     }
-
 }

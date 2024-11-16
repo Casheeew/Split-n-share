@@ -27,21 +27,16 @@ export type NoticeType = {
 };
 
 export type CurrentUser = {
-  name: string;
-  avatar: string;
-  userid: string;
-  notice: NoticeType[];
+  first_name: string;
+  last_name: string;
   email: string;
-  signature: string;
-  title: string;
-  group: string;
-  tags: TagType[];
-  notifyCount: number;
-  unreadCount: number;
-  country: string;
-  geographic: GeographicType;
-  address: string;
-  phone: string;
+  password: string;
+  desc?: string;
+  dorm?: string;
+  profile_picture?: string;
+  given_reviews: string;
+  received_reviews: string;
+  join_date: Date;
 };
 
 export type Member = {
@@ -73,3 +68,5 @@ export type ListItemDataType = {
   content: string;
   members: Member[];
 };
+
+export type ReviewData = any;

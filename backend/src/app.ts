@@ -5,8 +5,10 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import AppError from './utils/appError';
 import userRoutes from './routes/user';
+import productRoutes from './routes/product';
 
 import { NextFunction, Request, Response } from "express";
+import { protect } from './controllers/auth';
 
 // import userRoutes from './routes/userRoutes';
 // import globalErrHandler from './controllers/errorController';
@@ -22,7 +24,7 @@ app.use(helmet());
 
 // Limit request from the same API 
 const limiter = rateLimit({
-    max: 150,
+    max: 1000,
     windowMs: 60 * 60 * 1000,
     message: 'Too Many Request from this IP, please try again in an hour'
 });
@@ -30,7 +32,7 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({
-    limit: '15kb'
+    limit: '15mb'
 }));
 
 // Data sanitization against Nosql query injection
@@ -48,6 +50,7 @@ app.use(mongoSanitize());
 
 // Define more routes here
 app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {

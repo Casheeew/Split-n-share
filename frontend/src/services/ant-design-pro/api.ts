@@ -1,20 +1,28 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@umijs/max';
+import jwt from 'jsonwebtoken';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
+  const token = localStorage.getItem('token')?.split(" ")[1];
+
+  const decoded = token !== undefined ? jwt.decode(token) as any : { id: 'undefined' };
+
   return request<{
-    data: API.CurrentUser;
-  }>('/api/currentUser', {
+    data: {
+      status: string,
+      data: API.CurrentUser,
+    },
+  }>(`/api/users/${decoded.id}`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 
 /** 退出登录接口 POST /api/login/outLogin */
-export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+export async function logout(options?: { [key: string]: any }) {
+  return request<Record<string, any>>('/api/users/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -22,7 +30,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.LoginResult>('/api/users/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

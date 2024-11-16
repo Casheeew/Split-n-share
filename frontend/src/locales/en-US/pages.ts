@@ -1,6 +1,6 @@
 export default {
   'pages.layouts.userLayout.title':
-    'Ant Design is the most influential web design specification in Xihu district',
+    'The solution to swift and hassle-free group buying.',
   'pages.login.accountLogin.tab': 'Account Login',
   'pages.login.accountLogin.errorMessage': 'Incorrect username/password(admin/ant.design)',
   'pages.login.failure': 'Login failed, please try again!',
@@ -19,7 +19,7 @@ export default {
   'pages.login.phoneLogin.getVerificationCode': 'Get Code',
   'pages.getCaptchaSecondText': 'sec(s)',
   'pages.login.rememberMe': 'Remember me',
-  'pages.login.forgotPassword': 'Forgot Password ?',
+  'pages.login.signup': 'Don\'t have an account?',
   'pages.login.submit': 'Login',
   'pages.login.loginWith': 'Login with :',
   'pages.login.registerAccount': 'Register Account',
