@@ -4,11 +4,15 @@ import validator from 'validator';
 export interface IProduct extends Document {
   title: string;
   desc?: string;
-  joint_purchase_information: string;
+  joint_purchase_information?: string;
   image: string[];
   quantity: number;
   end: Date;
   cobuyers: {
+    user: mongoose.Types.ObjectId;
+    quantity: number;
+  }[];
+  cobuyers_queue: {
     user: mongoose.Types.ObjectId;
     quantity: number;
   }[];
@@ -36,6 +40,12 @@ const productSchema: Schema = new Schema({
   quantity: { type: Number, default: 1, min: 1 },
   end: { type: Date, required: true },
   cobuyers: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+      quantity: { type: Number, required: true, min: 1 }
+    }
+  ],
+  cobuyers_queue: [
     {
       user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
       quantity: { type: Number, required: true, min: 1 }

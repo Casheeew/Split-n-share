@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import Review from '../models/review';
 import User from '../models/user';
-import { getAll, getOne, updateOne } from './base';
+import { getAll, getOne, updateOne, deleteOne } from './base';
 
 const router = express.Router();
 
@@ -11,11 +11,11 @@ export const getAllReviews = async (req: Request, res: Response, next: NextFunct
 export const updateReview = async (req: Request, res: Response, next: NextFunction) => updateOne(Review, req, res, next);
 
 // delete: todo!
-// export const deleteUser = async (req: Request, res: Response, next: NextFunction) => deleteOne(User, req, res, next);
+export const deleteReview = async (req: Request, res: Response, next: NextFunction) => deleteOne(Review, req, res, next);
 
-export const postReview = async (req: Request, res: Response) => {
+export const postReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { author, target, text } = req.body;
+        const { author, target, rating, text } = req.body;
 
         // Validate target user
         const targetUser = await User.findById(target);
@@ -27,6 +27,7 @@ export const postReview = async (req: Request, res: Response) => {
         const newReview = new Review({
             author,
             target,
+            rating,
             text,
         });
 
@@ -38,7 +39,7 @@ export const postReview = async (req: Request, res: Response) => {
 
         res.status(200).json({ message: 'Success' });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        next(err);
     }
 }
 

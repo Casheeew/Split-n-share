@@ -1,5 +1,5 @@
 import express from 'express';
-import { getReview, getAllReviews, postReview, updateReview } from '../controllers/review';
+import { getReview, getAllReviews, postReview, updateReview, deleteReview } from '../controllers/review';
 import { protect } from '../controllers/auth';
 
 const router = express.Router();
@@ -17,6 +17,7 @@ router
 router
     .route('/:id')
     .get(getReview)
-    .patch(updateReview);
+    .patch(updateReview)
+    .delete(deleteReview);
 
 export default router;
