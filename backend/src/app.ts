@@ -6,9 +6,9 @@ import mongoSanitize from 'express-mongo-sanitize';
 import AppError from './utils/appError';
 import userRoutes from './routes/user';
 import productRoutes from './routes/product';
+import reviewRoutes from './routes/review';
 
 import { NextFunction, Request, Response } from "express";
-import { protect } from './controllers/auth';
 
 // import userRoutes from './routes/userRoutes';
 // import globalErrHandler from './controllers/errorController';
@@ -51,6 +51,7 @@ app.use(mongoSanitize());
 // Define more routes here
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {

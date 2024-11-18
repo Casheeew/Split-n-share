@@ -5,23 +5,23 @@ type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 const NotificationView: React.FC = () => {
   const getData = () => {
-    const Action = <Switch checkedChildren="开" unCheckedChildren="关" defaultChecked />;
+    const Action = <Switch checkedChildren="Enabled" unCheckedChildren="Disabled" defaultChecked />;
     return [
       {
-        title: '账户密码',
-        description: '其他用户的消息将以站内信的形式通知',
+        title: 'Enable Notifications',
+        description: 'Receive notifications from Split-n-share.',
         actions: [Action],
       },
-      {
-        title: '系统消息',
-        description: '系统消息将以站内信的形式通知',
-        actions: [Action],
-      },
-      {
-        title: '待办任务',
-        description: '待办任务将以站内信的形式通知',
-        actions: [Action],
-      },
+      // {
+      //   title: '系统消息',
+      //   description: '系统消息将以站内信的形式通知',
+      //   actions: [Action],
+      // },
+      // {
+      //   title: '待办任务',
+      //   description: '待办任务将以站内信的形式通知',
+      //   actions: [Action],
+      // },
     ];
   };
 

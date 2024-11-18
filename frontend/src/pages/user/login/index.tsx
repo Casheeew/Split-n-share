@@ -3,7 +3,6 @@ import { login } from '@/services/ant-design-pro/api';
 import {
   LockOutlined,
   MailOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
 import {
   LoginForm,
@@ -234,50 +233,6 @@ const Login: React.FC = () => {
                       <FormattedMessage
                         id="pages.login.email.required"
                         defaultMessage="Please input your KAIST email!"
-                      />
-                    ),
-                  },
-                ]}
-              />
-              <ProFormText
-                name="first_name"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined />,
-                }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.first_name.placeholder',
-                  defaultMessage: 'First Name',
-                })}
-                rules={[
-                  {
-                    required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.first_name.required"
-                        defaultMessage="Please input your first name!"
-                      />
-                    ),
-                  },
-                ]}
-              />
-              <ProFormText
-                name="last_name"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined />,
-                }}
-                placeholder={intl.formatMessage({
-                  id: 'pages.login.last_name.placeholder',
-                  defaultMessage: 'Last Name',
-                })}
-                rules={[
-                  {
-                    required: true,
-                    message: (
-                      <FormattedMessage
-                        id="pages.login.last_name.required"
-                        defaultMessage="Please input your last name!"
                       />
                     ),
                   },

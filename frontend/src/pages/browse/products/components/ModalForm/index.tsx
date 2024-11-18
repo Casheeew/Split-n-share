@@ -127,7 +127,7 @@ const CreatePostingModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel
                     />
                 </Form.Item>
                 <Form.Item name="price" label="Price" rules={[{ required: true, message: 'Please enter the price of the product.' }]}>
-                    <InputNumber style={{ width: '100%' }} placeholder='The price of the product (in won).' />
+                    <InputNumber style={{ width: '100%' }} placeholder='The price of the product (in KRW).' />
                 </Form.Item>
                 <Form.Item name="desc" label="Product Description" rules={[{ required: true, message: 'Please enter the description of the product.' }]}>
                     <Input.TextArea placeholder='Details about the product.' />

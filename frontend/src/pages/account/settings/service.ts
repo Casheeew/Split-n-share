@@ -9,7 +9,7 @@ export async function currentUser(options?: { [key: string]: any }) {
   const decoded = token !== undefined ? jwt.decode(token) as any : { id: 'undefined' };
 
   return request<{
-    data: API.CurrentUser;
+    data: { data: API.CurrentUser; }
   }>(`/api/users/${decoded.id}`, {
     method: 'GET',
     ...(options || {}),

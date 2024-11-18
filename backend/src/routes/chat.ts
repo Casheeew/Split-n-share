@@ -1,5 +1,5 @@
 import express from 'express';
-import { getReview, getReviews, postReview, updateReview } from '../controllers/review';
+import { getChat, getAllChats, createChat, updateChat } from '../controllers/chat';
 import { protect } from '../controllers/auth';
 
 const router = express.Router();
@@ -11,12 +11,12 @@ router.use(protect);
 
 router
     .route('/')
-    .get(getReviews)
-    .post(postReview);
+    .get(getAllChats)
+    .post(createChat);
 
 router
     .route('/:id')
-    .get(getReview)
-    .patch(updateReview);
+    .get(getChat)
+    .patch(updateChat);
 
 export default router;

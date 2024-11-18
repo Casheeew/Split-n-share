@@ -103,7 +103,7 @@ const Register: FC = () => {
 
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
-        window.location.href = urlParams.get('redirect') || '/';
+        window.location.href = urlParams.get('redirect') || '/account/settings';
       }
       else {
         console.error('register unsuccessful')
