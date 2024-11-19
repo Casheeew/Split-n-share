@@ -10,6 +10,7 @@ import reviewRoutes from './routes/review';
 import groupChatRoutes from './routes/groupchat';
 import searchRoutes from './routes/search';
 import { NextFunction, Request, Response } from "express";
+import path from 'path';
 
 // import userRoutes from './routes/userRoutes';
 // import globalErrHandler from './controllers/errorController';
@@ -22,6 +23,8 @@ app.use(cors());
 
 // Set security HTTP headers
 app.use(helmet());
+
+app.use(express.static(path.join('../frontend', 'dist')));
 
 // Limit request from the same API 
 const limiter = rateLimit({
@@ -56,6 +59,10 @@ app.use('/api/reviews', reviewRoutes);
 app.use('/api/groupchats', groupChatRoutes);
 app.use('/api/product', productRoutes);
 app.use('/api/search', searchRoutes);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join('../frontend', 'dist', 'index.html'));
+  });
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {
