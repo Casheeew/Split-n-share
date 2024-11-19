@@ -39,6 +39,4 @@ const groupChatSchema = new mongoose.Schema(
     { timestamps: true }
   );
   
-  const GroupChat = mongoose.model("GroupChat", groupChatSchema);
-  export default GroupChat;
   
