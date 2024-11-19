@@ -10,6 +10,7 @@ declare namespace API {
     password: string;
     desc?: string;
     dorm?: string;
+    phone?: string;
     profile_picture?: string;
     given_reviews: mongoose.Types.ObjectId[];
     received_reviews: mongoose.Types.ObjectId[];

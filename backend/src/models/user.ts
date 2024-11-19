@@ -7,6 +7,7 @@ export interface IUser extends Document {
   password: string;
   desc?: string;
   dorm?: string;
+  department?: string;
   profile_picture?: string;
   given_reviews: mongoose.Types.ObjectId[];
   received_reviews: mongoose.Types.ObjectId[];
@@ -25,6 +26,7 @@ const userSchema: Schema = new Schema({
   password: { type: String, required: true },
   desc: { type: String, default: '' },
   dorm: { type: String, default: '' },
+  department: { type: String, default: '' },
   profile_picture: {
     type: String,
     default: 'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon',

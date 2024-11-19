@@ -1,4 +1,4 @@
-import { Link, useModel, useRequest } from '@umijs/max';
+import { Link, useIntl, useModel, useRequest } from '@umijs/max';
 import { Card, Col, Form, List, Row, Select, Typography, Button, message, GetProp, UploadProps } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -22,7 +22,7 @@ dayjs.extend(relativeTime);
 // }));
 
 const FormItem = Form.Item;
-const { Paragraph } = Typography;
+const { Paragraph, Text } = Typography;
 const getKey = (id: string, index: number) => `${id}-${index}`;
 
 export type StoreValue = any;
@@ -34,7 +34,7 @@ const ProductGrid: FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const { styles } = useStyles();
-  const { data, loading, run } = useRequest((values: any) => {
+  const { data, loading, refresh, run } = useRequest((values: any) => {
     // todo! filter
     console.log('form data', values);
     return queryProducts({
@@ -42,6 +42,8 @@ const ProductGrid: FC = () => {
     });
   });
   const list = data?.data || [];
+
+  const intl = useIntl();
 
   const cardList = list && (
     <List<IProduct>
@@ -70,13 +72,20 @@ const ProductGrid: FC = () => {
               <Card.Meta
                 title={<a>{item.title}</a>}
                 description={
-                  <Paragraph
-                    ellipsis={{
-                      rows: 2,
-                    }}
-                  >
-                    {item.joint_purchase_information}
-                  </Paragraph>
+                  <>
+                    <Text style={{ color: 'rgba(208, 1, 27, 1)' }}>
+                      <b>
+                        {`${intl.formatNumber(item.price)} KRW`}
+                      </b>
+                    </Text>
+                    <Paragraph
+                      ellipsis={{
+                        rows: 2,
+                      }}
+                    >
+                      {item.joint_purchase_information}
+                    </Paragraph>
+                  </>
                 }
               />
               <div className={styles.cardItemContent}>
@@ -264,6 +273,7 @@ const ProductGrid: FC = () => {
         onFormFinish={async (name, { values }) => {
           if (name === 'createPostingForm') {
             await onFinish(values);
+            refresh();
             setModalOpen(false);
           }
         }}

@@ -10,7 +10,6 @@ import reviewRoutes from './routes/review';
 import groupChatRoutes from './routes/groupchat';
 
 import { NextFunction, Request, Response } from "express";
-import { protect } from './controllers/auth';
 
 // import userRoutes from './routes/userRoutes';
 // import globalErrHandler from './controllers/errorController';

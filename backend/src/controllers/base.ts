@@ -62,7 +62,8 @@ export const createOne = async (model: Model<any>, req: Request, res: Response, 
 
 export const getOne = async (model: Model<any>, req: Request, res: Response, next: NextFunction) => {
     try {
-        const doc = await model.findById(req.params.id);
+        const isList = req.params.id.startsWith('[') && req.params.id.endsWith(']');
+        const doc = isList? await model.find({_id: req.params.id.slice(1, -1).split(',')}) : await model.findById(req.params.id);
 
         if (!doc) {
             return next(new AppError(404, 'fail', 'No document found with that id'));

@@ -1,15 +1,15 @@
-import { ClusterOutlined, ContactsOutlined, HomeOutlined, PlusOutlined } from '@ant-design/icons';
+import { ClusterOutlined, ContactsOutlined, HomeOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
-import { Avatar, Button, Card, Col, Divider, Form, GetProps, Input, InputRef, message, Modal, Rate, Row, Tag } from 'antd';
-import React, { FC, useRef, useState } from 'react';
+import { Button, Card, Col, Divider, Form, GetProps, Input, message, Modal, Rate, Row, Tag } from 'antd';
+import React, { FC, useEffect, useState } from 'react';
 import useStyles from './Center.style';
-import Applications from './components/Applications';
 import Articles from './components/Articles';
 import Projects from './components/Projects';
 import Cobuyers from './components/Cobuyers';
-import type { CurrentUser, ListItemDataType, tabKeyType, TagType } from './data.d';
-import { queryCurrentUser, queryFakeList, createReview as apiCreateReview } from './service';
+import type { CurrentUser, tabKeyType } from './data.d';
+import { queryCurrentUser, queryUser, queryReviews, createReview as apiCreateReview } from './service';
+import dayjs from 'dayjs';
 
 const operationTabList = [
   {
@@ -58,72 +58,72 @@ const operationTabList = [
     ),
   },
 ];
-const TagList: React.FC<{
-  tags: CurrentUser['tags'];
-}> = ({ tags }) => {
-  const { styles } = useStyles();
-  const ref = useRef<InputRef | null>(null);
-  const [newTags, setNewTags] = useState<TagType[]>([]);
-  const [inputVisible, setInputVisible] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<string>('');
-  const showInput = () => {
-    setInputVisible(true);
-    if (ref.current) {
-      // eslint-disable-next-line no-unused-expressions
-      ref.current?.focus();
-    }
-  };
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-  const handleInputConfirm = () => {
-    let tempsTags = [...newTags];
-    if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
-      tempsTags = [
-        ...tempsTags,
-        {
-          key: `new-${tempsTags.length}`,
-          label: inputValue,
-        },
-      ];
-    }
-    setNewTags(tempsTags);
-    setInputVisible(false);
-    setInputValue('');
-  };
-  return (
-    <div className={styles.tags}>
-      <div className={styles.tagsTitle}>Tags</div>
-      {(tags || []).concat(newTags).map((item) => (
-        <Tag key={item.key}>{item.label}</Tag>
-      ))}
-      {inputVisible && (
-        <Input
-          ref={ref}
-          type="text"
-          size="small"
-          style={{
-            width: 78,
-          }}
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleInputConfirm}
-          onPressEnter={handleInputConfirm}
-        />
-      )}
-      {!inputVisible && (
-        <Tag
-          onClick={showInput}
-          style={{
-            borderStyle: 'dashed',
-          }}
-        >
-          <PlusOutlined />
-        </Tag>
-      )}
-    </div>
-  );
-};
+// const TagList: React.FC<{
+//   tags: CurrentUser['tags'];
+// }> = ({ tags }) => {
+//   const { styles } = useStyles();
+//   const ref = useRef<InputRef | null>(null);
+//   const [newTags, setNewTags] = useState<TagType[]>([]);
+//   const [inputVisible, setInputVisible] = useState<boolean>(false);
+//   const [inputValue, setInputValue] = useState<string>('');
+//   const showInput = () => {
+//     setInputVisible(true);
+//     if (ref.current) {
+//       // eslint-disable-next-line no-unused-expressions
+//       ref.current?.focus();
+//     }
+//   };
+//   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+//     setInputValue(e.target.value);
+//   };
+//   const handleInputConfirm = () => {
+//     let tempsTags = [...newTags];
+//     if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
+//       tempsTags = [
+//         ...tempsTags,
+//         {
+//           key: `new-${tempsTags.length}`,
+//           label: inputValue,
+//         },
+//       ];
+//     }
+//     setNewTags(tempsTags);
+//     setInputVisible(false);
+//     setInputValue('');
+//   };
+//   return (
+//     <div className={styles.tags}>
+//       <div className={styles.tagsTitle}>Tags</div>
+//       {(tags || []).concat(newTags).map((item) => (
+//         <Tag key={item.key}>{item.label}</Tag>
+//       ))}
+//       {inputVisible && (
+//         <Input
+//           ref={ref}
+//           type="text"
+//           size="small"
+//           style={{
+//             width: 78,
+//           }}
+//           value={inputValue}
+//           onChange={handleInputChange}
+//           onBlur={handleInputConfirm}
+//           onPressEnter={handleInputConfirm}
+//         />
+//       )}
+//       {!inputVisible && (
+//         <Tag
+//           onClick={showInput}
+//           style={{
+//             borderStyle: 'dashed',
+//           }}
+//         >
+//           <PlusOutlined />
+//         </Tag>
+//       )}
+//     </div>
+//   );
+// };
 
 type ModalProps = GetProps<typeof Modal> & {
   open: boolean;
@@ -229,19 +229,58 @@ const Center: React.FC = () => {
 
 
   //  获取用户信息
-  const { data: currentUser, loading } = useRequest(() => {
+  const { data, loading } = useRequest(() => {
     return queryCurrentUser();
   });
 
+  const currentUser = data?.data;
+
   // 获取tab列表数据
-  const { data: listData } = useRequest(() => {
-    return queryFakeList({
-      count: 3,
+  const { data: receivedReviews, loading: loadingReceived, run: runReceived } = useRequest(() => {
+    if (currentUser === undefined) { return; }
+    return queryReviews({
+      target: currentUser._id
     });
   });
 
+  const { data: givenReviews, loading: loadingGiven, run: runGiven } = useRequest(() => {
+    if (currentUser === undefined) { return; }
+    return queryReviews({
+      author: currentUser._id
+    });
+  });
+
+  // 获取tab列表数据
+  const { data: receivedReviewAuthors, run: runReceivedReviewAuthors } = useRequest(() => {
+    if (receivedReviews === undefined) { return; }
+    return queryUser({
+      id: '[' + receivedReviews.data.map((item) => item.author).join(',') + ']'
+    });
+  });
+
+  const { data: givenReviewTargets, run: runGivenReviewTargets } = useRequest(() => {
+    if (givenReviews === undefined) { return; }
+    return queryUser({
+      id: '[' + givenReviews.data.map((item) => item.target).join(',') + ']'
+    });
+  });
+
+  useEffect(() => {
+    runReceived();
+    runGiven();
+  }, [loading]);
+
+  useEffect(() => {
+    runReceivedReviewAuthors();
+  }, [loadingReceived]);
+
+  useEffect(() => {
+    runGivenReviewTargets();
+  }, [loadingGiven]);
+
   //  渲染用户信息
-  const renderUserInfo = ({ title, group, geographic }: Partial<CurrentUser>) => {
+  const renderUserInfo = ({ join_date, dorm, department }: Partial<CurrentUser>) => {
+    console.log("Joined", join_date);
     return (
       <div className={styles.detail}>
         <p>
@@ -250,7 +289,10 @@ const Center: React.FC = () => {
               marginRight: 8,
             }}
           />
-          {title}
+          {"Joined "}
+
+          <span>{dayjs(join_date).fromNow()}</span>
+
         </p>
         <p>
           <ClusterOutlined
@@ -258,7 +300,7 @@ const Center: React.FC = () => {
               marginRight: 8,
             }}
           />
-          {group}
+          {department}
         </p>
         <p>
           <HomeOutlined
@@ -266,40 +308,29 @@ const Center: React.FC = () => {
               marginRight: 8,
             }}
           />
-          {
-            (
-              geographic || {
-                province: {
-                  label: '',
-                },
-              }
-            ).province.label
-          }
-          {
-            (
-              geographic || {
-                city: {
-                  label: '',
-                },
-              }
-            ).city.label
-          }
+          {dorm}
         </p>
       </div>
     );
   };
 
   // 渲染tab切换
-  const renderChildrenByTabKey = (tabValue: tabKeyType, data: ListItemDataType[]) => {
+  const renderChildrenByTabKey = (tabValue: tabKeyType) => {
     if (tabValue === 'postings') {
       // todo!
-      return <Projects data={data} />;
+      // return <Projects data={data} />;
+      return <Projects data={[]} />;
     }
+
     if (tabValue === 'given_reviews') {
-      return <Applications data={data} />;
+      console.log('Given  -----');
+      console.log(givenReviews);
+      return <Articles key="given_reviews" tab="given" data={givenReviews?.data || []} targetUser={givenReviewTargets} />;
     }
     if (tabValue === 'received_reviews') {
-      return <Articles data={data} />;
+      console.log('Received  -----');
+      console.log(receivedReviews);
+      return <Articles key="received_reviews" tab="received" data={receivedReviews?.data || []} targetUser={receivedReviewAuthors} />;
     }
     return null;
   };
@@ -353,7 +384,8 @@ const Center: React.FC = () => {
           </Col>
           <Col lg={17} md={24}>
             <Card title="Your Past Cobuyers">
-              <Cobuyers data={(listData?.list || [])} />
+              {/* <Cobuyers data={(listData?.list || [])} /> */}
+              <Cobuyers data={([])} />
             </Card>
             <br />
             <Card
@@ -368,7 +400,7 @@ const Center: React.FC = () => {
                 <Button type='primary' size='large' onClick={showModal}>Write a review</Button>
               }
             >
-              {renderChildrenByTabKey(tabKey, (listData?.list || []))}
+              {renderChildrenByTabKey(tabKey)}
             </Card>
           </Col>
         </Row>

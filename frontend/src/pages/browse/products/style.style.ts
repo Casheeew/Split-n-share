@@ -12,7 +12,7 @@ const useStyles = createStyles(({ token }) => {
         },
       },
       '.ant-card-meta-description': {
-        height: '44px',
+        height: '66px',
         overflow: 'hidden',
         lineHeight: '22px',
       },
