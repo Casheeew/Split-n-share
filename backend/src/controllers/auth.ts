@@ -23,7 +23,6 @@ const createToken = (id: string) => {
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        console.log(req.body);
         const { email, password } = req.body;
 
         // 1) check if email and password exist

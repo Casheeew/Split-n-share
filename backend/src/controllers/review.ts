@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express';
 import Review from '../models/review';
 import User from '../models/user';
-import { getOne, updateOne } from './base';
+import { getOne, updateOne, deleteOne } from './base';
 import APIFeatures from '../utils/APIFeatures';
 
 const router = express.Router();
@@ -11,7 +11,7 @@ export const getReview = async (req: Request, res: Response, next: NextFunction)
 export const updateReview = async (req: Request, res: Response, next: NextFunction) => updateOne(Review, req, res, next);
 
 // delete: todo!
-// export const deleteUser = async (req: Request, res: Response, next: NextFunction) => deleteOne(User, req, res, next);
+export const deleteReview = async (req: Request, res: Response, next: NextFunction) => deleteOne(Review, req, res, next);
 
 export const getReviews = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -47,7 +47,7 @@ export const getReviews = async (req: Request, res: Response, next: NextFunction
 
 export const postReview = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { author, target, text } = req.body;
+        const { author, target, rating, text } = req.body;
 
         // Validate target user
         const targetUser = await User.findById(target);
@@ -59,6 +59,7 @@ export const postReview = async (req: Request, res: Response, next: NextFunction
         const newReview = new Review({
             author,
             target,
+            rating,
             text,
         });
 
