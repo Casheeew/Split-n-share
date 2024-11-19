@@ -21,6 +21,7 @@ export interface IProduct extends Document {
   price_old: number;
   category?: string;
   created_at: Date;
+  pickup_location?: string;
 }
 
 const productSchema: Schema = new Schema({
@@ -56,6 +57,7 @@ const productSchema: Schema = new Schema({
   price_old: { type: Number, reqired: true, min: 0 },
   category: { type: String, default: '', index: true },
   created_at: { type: Date, default: Date.now },
+  pick_up_location: { type: String, default: '' },
 });
 
 const Product = mongoose.model<IProduct>('Product', productSchema);
