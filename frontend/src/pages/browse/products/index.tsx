@@ -158,7 +158,7 @@ const ProductGrid: FC = () => {
       ));
     console.log(values.image);
     values.creator = currentUser?._id;
-    createProductPosting(values);
+    await createProductPosting(values);
   }
 
   const showModal = () => {

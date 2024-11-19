@@ -6,9 +6,8 @@ import React from 'react';
 const { Title } = Typography;
 
 const Product: React.FC = () => {
-	const { productId } = useParams();
 
-	const { data: productData, productLoading, productRun } = useRequest((values: any) => {
+	const { data: productData, loading: productLoading, run: productRun } = useRequest((values: any) => {
 		// todo! filter
 		console.log('form data', values);
 		return queryProducts({
@@ -16,6 +15,8 @@ const Product: React.FC = () => {
 			count: 8,
 		});
 	});
+
+	const { productId } = useParams();
 	const product = productData?.data || { title: '', image: [''], creator: '' };
 
 	const { data: creatorData, loading: creatorLoading, run: creatorRun } = useRequest((values: any) => {
@@ -36,13 +37,12 @@ const Product: React.FC = () => {
 							padding: '60px 32px 0px 32px',
 						}}>
 							<Carousel arrows autoplay>
-								<div>
-									{
-										product.image.map((img) => {
-											return <Image key={img} src={img} />
-										})
-									}
-								</div>
+
+								{
+									product.image.map((img) => {
+										return <Image key={img} src={img} />
+									})
+								}
 							</Carousel>
 						</div>
 					</Col>
