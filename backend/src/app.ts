@@ -8,7 +8,7 @@ import userRoutes from './routes/user';
 import productRoutes from './routes/product';
 import reviewRoutes from './routes/review';
 import groupChatRoutes from './routes/groupchat';
-
+import searchRoutes from './routes/search';
 import { NextFunction, Request, Response } from "express";
 
 // import userRoutes from './routes/userRoutes';
@@ -54,6 +54,8 @@ app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/groupchats', groupChatRoutes);
+app.use('/api/product', productRoutes);
+app.use('/api/search', searchRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {
