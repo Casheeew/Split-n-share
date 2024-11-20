@@ -3,6 +3,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import type { ListItem } from './types';
 import { getAll, getOne, updateOne, deleteOne, createOne } from '../base';
 import Product from '../../models/product';
+import AppError from '../../utils/appError';
 
 const titles = [
   'Shin Ramen, 120g, 32 packs',
@@ -119,9 +120,33 @@ const user = [
 
 const router = express.Router();
 
-
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => getAll(Product, req, res, next);
-export const getProduct = async (req: Request, res: Response, next: NextFunction) => getOne(Product, req, res, next);
+export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      const isList = req.params.id.startsWith('[') && req.params.id.endsWith(']');
+      const doc = isList? await Product.find({_id: req.params.id.slice(1, -1).split(',')}) : await Product.findById(req.params.id);
+
+      if (!doc) {
+          return next(new AppError(404, 'fail', 'No document found with that id'));
+      }
+
+      console.log({
+          data: {
+              status: 'success',
+              data: doc,
+          },
+      })
+
+      res.status(200).json({
+          data: {
+              status: 'success',
+              data: doc,
+          },
+      });
+  } catch (error) {
+      next(error);
+  }
+}
 
 // Don't update password on this 
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => updateOne(Product, req, res, next);

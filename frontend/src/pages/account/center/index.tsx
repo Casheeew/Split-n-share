@@ -23,7 +23,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -38,7 +37,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -53,7 +51,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -179,7 +176,7 @@ const WriteReviewModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel, 
     >
       <Divider />
       <Form form={form} layout="vertical" name="writeReviewForm">
-        <Form.Item name="review" label="Write your review" rules={[{ required: true, message: 'Please note your experience.' }]}>
+        <Form.Item name="text" label="Write your review" rules={[{ required: true, message: 'Please note your experience.' }]}>
           <Input.TextArea
             autoSize={{ minRows: 6, maxRows: 12 }}
             placeholder='Write about your experience.' />
@@ -219,13 +216,6 @@ const Center: React.FC = () => {
     },
   });
 
-  const onFinish = (values: Store) => {
-    // console.log(values);
-    // todo! fill values with owner id and so on
-    // todo! reset on submit
-    createReview(values);
-  }
-
   const showModal = () => {
     setModalOpen(true);
   }
@@ -247,14 +237,14 @@ const Center: React.FC = () => {
   const currentUser = data?.data;
 
   // 获取tab列表数据
-  const { data: receivedReviews, loading: loadingReceived, run: runReceived } = useRequest(() => {
+  const { data: receivedReviews, loading: loadingReceived, run: runReceived, refresh: refreshReceived } = useRequest(() => {
     if (currentUser === undefined) { return; }
     return queryReviews({
       target: currentUser._id
     });
   });
 
-  const { data: givenReviews, loading: loadingGiven, run: runGiven } = useRequest(() => {
+  const { data: givenReviews, loading: loadingGiven, run: runGiven, refresh: refreshGiven } = useRequest(() => {
     if (currentUser === undefined) { return; }
     return queryReviews({
       author: currentUser._id
@@ -300,6 +290,20 @@ const Center: React.FC = () => {
   useEffect(() => {
     runGivenReviewTargets();
   }, [loadingGiven]);
+
+  
+  const onFinish = async (values: Store) => {
+    // console.log(values);
+    // todo! fill values with owner id and so on
+    // todo! reset on submit
+    values.author = currentUserId;
+    values.target = userId;
+    await createReview(values);
+    refreshGiven();
+    refreshReceived();
+    setTabKey('received_reviews');
+  }
+
 
   //  渲染用户信息
   const renderUserInfo = ({ join_date, dorm, department }: Partial<CurrentUser>) => {

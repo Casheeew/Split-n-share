@@ -1,4 +1,4 @@
-import { Link, useParams, useRequest } from '@umijs/max';
+import { Link, useModel, useParams, useRequest } from '@umijs/max';
 import {
 	Card,
 	Carousel,
@@ -14,13 +14,20 @@ import {
 	message,
 	Skeleton,
 } from 'antd';
-import { queryProducts, queryUser, requestToJoinDeal } from './service';
-import React, { useEffect, useState } from 'react';
+import { createChatForTwo, queryProducts, queryUser, requestToJoinDeal } from './service';
+import React, { useContext, useEffect, useState } from 'react';
+import { CommentOutlined } from '@ant-design/icons';
+import { ChatContext } from '@/ChatContext';
 
 const { Title, Paragraph, Text } = Typography;
 
 const Product: React.FC = () => {
+	const { setChatOpen } = useContext(ChatContext);
+
 	const { productId } = useParams();
+
+	const { initialState } = useModel('@@initialState');
+	const { currentUser } = initialState || {};
 
 	const { data: productData, loading: productLoading } = useRequest(() =>
 		queryProducts({ productId })
@@ -48,6 +55,13 @@ const Product: React.FC = () => {
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [requestStatus, setRequestStatus] = useState(false);
+
+	const onChatButtonClick = () => {
+		createChatForTwo({
+			targetId: creator?._id,
+		});
+		setChatOpen(true);		
+	}
 
 	const handleRequestToJoin = async () => {
 		setLoading(true);
@@ -114,12 +128,24 @@ const Product: React.FC = () => {
 								</Space>
 							}
 							{creator &&
-								<Link to={`/account/center/${creator._id}`}>
-									<Space>
-										<Avatar src={creator.profile_picture} />
-										<Text>{`${creator.first_name} ${creator.last_name}`}</Text>
-									</Space>
-								</Link>}
+								<Space size='large'>
+									<Link to={`/account/center/${creator._id}`}>
+										<Space>
+											<Avatar src={creator.profile_picture} />
+											<Text>{`${creator.first_name} ${creator.last_name}`}</Text>
+										</Space>
+									</Link>
+									{/* todo! hide when your own product */}
+									{
+										currentUser && (currentUser._id !== creator._id) && <Button
+											icon={<CommentOutlined />}
+											type='primary'											// size='small'
+											onClick={onChatButtonClick}
+										>
+											Chat with Host
+										</Button>}
+								</Space>
+							}
 							<Divider />
 							<Text
 								style={{

@@ -29,11 +29,12 @@ export type StoreValue = any;
 export type Store = Record<string, StoreValue>;
 
 const ProductGrid: FC = () => {
+
+
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [modalOpen, setModalOpen] = useState(false);
-
-  const [filter, setFilter] = useState<any>({});
+  const [filterOptions, setFilterOptions] = useState<any>({});
 
   const { styles } = useStyles();
   const { data, loading, refresh, run } = useRequest((values: any) => {
@@ -43,7 +44,24 @@ const ProductGrid: FC = () => {
       count: 8,
     });
   });
-  const list = data?.data || [];
+
+  const filter = (data: any, options: any) => {
+    if (options.category === 'all') {
+      delete options.category;
+    }
+    if (options.dorm === 'all') {
+      delete options.dorm;
+    }
+    console.log(options);
+
+    return data.filter((product: any) => {
+      return !options.category || (product.category === options.category)
+    }).filter((product: any) => {
+      return !options.dorm || (product.dorm === options.dorm)
+    });
+  }
+
+  const list = filter(data?.data || [], filterOptions);
 
   const intl = useIntl();
 
@@ -164,15 +182,15 @@ const ProductGrid: FC = () => {
       ));
     console.log(values.image);
     values.creator = currentUser?._id;
-    createProductPosting(values);
+    await createProductPosting(values);
   }
 
   const showModal = () => {
     setModalOpen(true);
   }
 
-  const handleFilterMenuClick = () => {
-    
+  const handleFilterMenuClick = (value: any) => {
+    setFilterOptions((options: any) => ({ ...options, category: value.key }));
   }
 
   // const handleModalOk = () => {
@@ -204,7 +222,8 @@ const ProductGrid: FC = () => {
                 onValuesChange={(_, values) => {
                   // 表单项变化时请求数据
                   // 模拟查询表单生效
-                  run(values);
+                  // run(values);
+                  setFilterOptions((options: any) => ({ ...options, dorm: values.dorm }))
                 }}
               >
                 {/* <StandardFormRow
@@ -227,44 +246,89 @@ const ProductGrid: FC = () => {
                 <StandardFormRow title="Filter" grid last>
                   <Row gutter={16}>
                     <Col lg={8} md={10} sm={10} xs={24}>
-                      <FormItem {...formItemLayout} label="Author" name="author">
+                      <FormItem {...formItemLayout} label="Location" name="dorm">
                         <Select
                           // todo! change to defaultvalue
-                          placeholder="Any"
+                          placeholder="Dormitory"
                           style={{
                             maxWidth: 200,
                             width: '100%',
                           }}
                           options={[
                             {
-                              label: 'Lisa',
-                              value: 'lisa',
+                              value: 'all',
+                              label: 'All',
+                            },
+                            {
+                              value: 'E8 - Sejong Hall',
+                              label: 'E8 - Sejong Hall',
+                            },
+                            {
+                              value: 'N21 - Jihye Hall',
+                              label: 'N21 - Jihye Hall',
+                            },
+                            {
+                              value: 'N20 - Silloe Hall',
+                              label: 'N20 - Silloe Hall',
+                            },
+                            {
+                              value: 'N19 - Areum Hall',
+                              label: 'N19 - Areum Hall',
+                            },
+                            {
+                              value: 'N18 - Jilli Hall',
+                              label: 'N18 - Jilli Hall',
+                            },
+                            {
+                              value: 'N17 - Seongsil Hall',
+                              label: 'N17 - Seongsil Hall',
+                            },
+                            {
+                              value: 'N16 - Somang Hall',
+                              label: 'N16 - Somang Hall',
+                            },
+                            {
+                              value: 'N14 - Sarang Hall',
+                              label: 'N14 - Sarang Hall',
+                            },
+                            {
+                              value: 'W6 - Mir Hall',
+                              label: 'W6 - Mir Hall',
+                            },
+                            {
+                              value: 'W6 - Narae Hall',
+                              label: 'W6 - Narae Hall',
+                            },
+                            {
+                              value: 'W5 - Yeji Hall',
+                              label: 'W5 - Yeji Hall',
+                            },
+                            {
+                              value: 'W4-4 - Heemang Hall',
+                              label: 'W4-4 - Heemang Hall',
+                            },
+                            {
+                              value: 'W4-3 - Dasom Hall',
+                              label: 'W4-3 - Dasom Hall',
+                            },
+                            {
+                              value: 'W4-2 - Nadl Hall',
+                              label: 'W4-2 - Nadl Hall',
+                            },
+                            {
+                              value: 'W4-1 - Yeoul Hall',
+                              label: 'W4-1 - Yeoul Hall',
+                            },
+                            {
+                              value: 'Other',
+                              label: 'other',
                             },
                           ]}
                         />
                       </FormItem>
                     </Col>
                     <Col lg={8} md={10} sm={10} xs={24}>
-                      <FormItem {...formItemLayout} label="Rating" name="rate">
-                        <Select
-                          // todo! change to defaultvalue
-                          placeholder="Any"
-                          style={{
-                            maxWidth: 200,
-                            width: '100%',
-                          }}
-                          options={[
-                            {
-                              label: 'Good',
-                              value: 'good',
-                            },
-                            {
-                              label: 'Normal',
-                              value: 'normal',
-                            },
-                          ]}
-                        />
-                      </FormItem>
+
                     </Col>
                     {/* todo! hookup create post action */}
                     <Col lg={8} md={10} sm={10} xs={24} style={{ display: 'flex', justifyContent: 'flex-end' }}>

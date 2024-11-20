@@ -139,67 +139,67 @@ const BaseView: React.FC = () => {
                 ]}
                 options={[
                   {
-                    value: 'sejonggwan',
+                    value: 'E8 - Sejong Hall',
                     label: 'E8 - Sejong Hall',
                   },
                   {
-                    value: 'jihyegwan',
+                    value: 'N21 - Jihye Hall',
                     label: 'N21 - Jihye Hall',
                   },
                   {
-                    value: 'silloegwan',
+                    value: 'N20 - Silloe Hall',
                     label: 'N20 - Silloe Hall',
                   },
                   {
-                    value: 'areumgwan',
+                    value: 'N19 - Areum Hall',
                     label: 'N19 - Areum Hall',
                   },
                   {
-                    value: 'jilligwan',
+                    value: 'N18 - Jilli Hall',
                     label: 'N18 - Jilli Hall',
                   },
                   {
-                    value: 'seongsilgwan',
+                    value: 'N17 - Seongsil Hall',
                     label: 'N17 - Seongsil Hall',
                   },
                   {
-                    value: 'somanggwan',
+                    value: 'N16 - Somang Hall',
                     label: 'N16 - Somang Hall',
                   },
                   {
-                    value: 'saranggwan',
+                    value: 'N14 - Sarang Hall',
                     label: 'N14 - Sarang Hall',
                   },
                   {
-                    value: 'mirgwan',
+                    value: 'W6 - Mir Hall',
                     label: 'W6 - Mir Hall',
                   },
                   {
-                    value: 'naraegwan',
+                    value: 'W6 - Narae Hall',
                     label: 'W6 - Narae Hall',
                   },
                   {
-                    value: 'yejigwan',
+                    value: 'W5 - Yeji Hall',
                     label: 'W5 - Yeji Hall',
                   },
                   {
-                    value: 'heemanggwan',
+                    value: 'W4-4 - Heemang Hall',
                     label: 'W4-4 - Heemang Hall',
                   },
                   {
-                    value: 'dasomgwan',
+                    value: 'W4-3 - Dasom Hall',
                     label: 'W4-3 - Dasom Hall',
                   },
                   {
-                    value: 'nadlgwan',
+                    value: 'W4-2 - Nadl Hall',
                     label: 'W4-2 - Nadl Hall',
                   },
                   {
-                    value: 'yeoulgwan',
+                    value: 'W4-1 - Yeoul Hall',
                     label: 'W4-1 - Yeoul Hall',
                   },
                   {
-                    value: 'other',
+                    value: 'Outside of Main Campus',
                     label: 'Outside of Main Campus',
                   },
                 ]}
@@ -211,15 +211,15 @@ const BaseView: React.FC = () => {
                 label="(Optional) Department"
                 options={[
                   {
-                    value: 'soc',
+                    value: 'School of Computing',
                     label: 'School of Computing',
                   },
                   {
-                    value: 'fresh',
+                    value: 'School of Freshman',
                     label: 'School of Freshman',
                   },
                   {
-                    value: 'other',
+                    value: 'Other',
                     label: 'Other',
                   },
                 ]} />

@@ -1,38 +1,60 @@
+import { ChatContext } from '@/ChatContext';
 import { CloseOutlined, CommentOutlined, SendOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Row, Input, Typography, List, Avatar, Skeleton, Divider, FloatButton } from 'antd';
-import dayjs from 'dayjs';
-import React, { useState } from 'react';
+import { Button, Card, Col, Row, Input, Typography, List, Avatar, Skeleton, FloatButton } from 'antd';
+// import dayjs from 'dayjs';
+import React, { createRef, useContext, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { queryChats } from './service';
+import { io } from 'socket.io-client';
+import { useModel, useRequest } from '@umijs/max';
+import dayjs from 'dayjs';
+
+// Replace with backend's URL
+const socket = io('http://localhost:3080');
+
+socket.on('message-update', (data) => {
+    console.log('DB change detected: ', data);
+});
 
 const { Text } = Typography;
 const { Search } = Input;
 
 const data = [
-    { text: "Hello, how can I help you?", right: false },
-    { text: "Hi. I live a little far, so I wonder if I could come to your place and pick up instead?", right: true },
-    { text: "Yeah, sure! I live in Areum N19 room 123. Come by whenever!", right: false },
-    { text: "Thanks a lot!", right: true },
+    // { text: "Hello, how can I help you?", right: false },
+    // { text: "Hi. I live a little far, so I wonder if I could come to your place and pick up instead?", right: true },
+    // { text: "Yeah, sure! I live in Areum N19 room 123. Come by whenever!", right: false },
+    // { text: "Thanks a lot!", right: true },
 ]
 
 const users = [
-    { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: true },
-    { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: false },
-    { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: false },
-    { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: false },
+    // { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: true },
+    // { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: false },
+    // { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: false },
+    // { username: 'Jane Doe', text: 'Hello, how can I help you?', date: dayjs(new Date(new Date().getTime() - 1000 * 60 * 60 * 2).getTime()).format('HH:mm'), avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', selected: false },
 ]
 
 const Widget: React.FC = () => {
-    const [open, setOpen] = useState<boolean>(false);
+    const { chatOpen, setChatOpen } = useContext(ChatContext);
+    const { initialState } = useModel('@@initialState');
+    const { currentUser } = initialState || {};
+
+    const { data: chatData, loading } = useRequest(() =>
+        queryChats()
+    );
+
+    console.log('chatdata', chatData);
+
+    //
 
     const chatToggle = <FloatButton
-        badge={{ count: 5 }}
+        // badge={{ count: 5 }}
         tooltip={<div>Chat</div>}
         type="primary"
         icon={<CommentOutlined />}
-        onClick={() => { setOpen(true) }}
+        onClick={() => { setChatOpen(true) }}
     />
 
-    return !open
+    return !chatOpen
         ? chatToggle
         : (
             <div className="rcw-widget-container">
@@ -48,7 +70,7 @@ const Widget: React.FC = () => {
                             type="text"
                             shape="circle"
                             icon={<CloseOutlined />}
-                            onClick={() => { setOpen(false) }}
+                            onClick={() => { setChatOpen(false) }}
                         />
                     }
                 >
@@ -69,29 +91,36 @@ const Widget: React.FC = () => {
                                 }}
                             >
                                 <InfiniteScroll
-                                    dataLength={data.length}
+                                    dataLength={chatData.length}
                                     next={() => false}
-                                    hasMore={data.length < 50}
+                                    hasMore={false}
                                     loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-                                    endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+                                    // endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                                     scrollableTarget="scrollableDiv"
                                 >
                                     <List
                                         style={{ "marginLeft": "12px", "marginTop": "0px" }}
                                         split={false}
-                                        dataSource={users}
-                                        renderItem={(item) => (
-                                            <List.Item>
-                                                {/* todo! <>Jane Doe </>*/}
-                                                <List.Item.Meta
-                                                    style={{backgroundColor: item.selected ? '#f5f5f5' : '#ffffff' }}
-                                                    avatar={<Avatar src={item.avatar} size="small" />}
-                                                    title={<>{item.username} &nbsp;<small>{item.date}</small></>}
-                                                    description={item.text}
-                                                />
-                                            </List.Item>
+                                        dataSource={chatData}
+                                        renderItem={(item: any) => {
+                                            const targetUser = item.members.find((member: any) => member._id !== currentUser?._id);
+                                            return (
+                                                <List.Item>
+                                                    {/* todo! <>Jane Doe </>*/}
+                                                    <List.Item.Meta
+                                                        style={{ backgroundColor: item.selected ? '#f5f5f5' : '#ffffff' }}
+                                                        avatar={<Avatar src={targetUser.profile_picture} size="small" />}
+                                                        title={
+                                                            <>
+                                                                {`${targetUser.first_name} ${targetUser.last_name}`} &nbsp;<small>{dayjs(item.updatedAt).format('MM/DD HH:mm')}</small>
+                                                            </>
+                                                        }
+                                                        description={item.messages[0]?.text || 'This is the start of a legendary conversation.'}
+                                                    />
+                                                </List.Item>
 
-                                        )}
+                                            )
+                                        }}
                                     />
                                 </InfiniteScroll>
                             </div>
@@ -113,23 +142,26 @@ const Widget: React.FC = () => {
                                         <InfiniteScroll
                                             dataLength={data.length}
                                             next={() => false}
-                                            hasMore={data.length < 50}
+                                            hasMore={false}
                                             style={{ display: 'flex', flexDirection: 'column-reverse' }}
                                             inverse={true}
                                             loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
-                                            endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
+                                            // endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                                             scrollableTarget="scrollableDiv"
                                         >
                                             <List
                                                 split={false}
-                                                dataSource={data}
-                                                renderItem={(item) => (
-                                                    <List.Item style={{ float: item.right ? 'right' : undefined, clear: 'right', padding: '5px', maxWidth: '75%' }}>
-                                                        <Card bodyStyle={{ padding: "12px", backgroundColor: item.right ? '#f5222d' : '' }}>
-                                                            <Text style={{ color: item.right ? '#ffffff' : '' }}>{item.text}</Text>
-                                                        </Card>
-                                                    </List.Item>
-                                                )}
+                                                dataSource={chatData.messages}
+                                                renderItem={(msg: any) => {
+                                                    msg.right = currentUser?._id === msg.senderId;
+                                                    return (
+                                                        <List.Item style={{ float: msg.right ? 'right' : undefined, clear: 'right', padding: '5px', maxWidth: '75%' }}>
+                                                            <Card bodyStyle={{ padding: "12px", backgroundColor: msg.right ? '#f5222d' : '' }}>
+                                                                <Text style={{ color: msg.right ? '#ffffff' : '' }}>{msg.text}</Text>
+                                                            </Card>
+                                                        </List.Item>
+                                                    )
+                                                }}
                                             />
                                         </InfiniteScroll>
                                     </div>
@@ -138,12 +170,14 @@ const Widget: React.FC = () => {
                             <Card bordered={false} bodyStyle={{ padding: '0' }}>
                                 <Input
                                     key="ChatSearch"
-                                    placeholder="Aa"
+                                    placeholder="Aa"    
+                                    ref={inputRef}
                                     style={{ borderRadius: '0 0 10px' }}
                                     suffix={
-                                        <Button size='small' type="text" shape="circle" icon={<SendOutlined />} />
+                                        <Button size='small' onClick={() => { inputRef.current = '' }} type="text" shape="circle" icon={<SendOutlined />} />
                                     }
                                 />
+
                             </Card>
                         </Col>
                     </Row>

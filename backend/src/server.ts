@@ -3,6 +3,10 @@ import 'dotenv/config';
 import app from './app';
 import User from './models/user';
 import Review from './models/review';
+import GroupChat from './models/groupchat';
+import { createServer } from 'node:http';
+import { Server } from 'socket.io';
+import Product from './models/product';
 
 const dbConnString = process.env.DB_CONN_STRING;
 
@@ -23,14 +27,27 @@ async function main() {
     await mongoose.connection.db?.admin().command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
+    const server = createServer(app);
+    const io = new Server(server);
+
+    io.on('connection', (socket) => {
+        console.log('a user connected!');
+    });
+
+    GroupChat.watch().on('change', (change) => {
+        console.log('change detected ', change);
+
+        io.emit('message-update', change);
+    })
+
     // User.collection.deleteMany();
     // Product.collection.deleteMany();
     // Review.collection.deleteMany();
 
     // Start the server
     const port = process.env.PORT;
-    app.listen(port, () => {
-        console.log(`Application is running on port ${port}`);
+    server.listen(port, () => {
+        console.log(`Server is running on port ${port}`);
     })
 }
 

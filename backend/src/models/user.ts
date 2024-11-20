@@ -9,6 +9,7 @@ export interface IUser extends Document {
   dorm?: string;
   department?: string;
   profile_picture?: string;
+  phone?: string;
   given_reviews: mongoose.Types.ObjectId[];
   received_reviews: mongoose.Types.ObjectId[];
   join_date: Date;

@@ -17,11 +17,11 @@ export const getAllGroupChats = async (req: Request, res: Response, next: NextFu
             .sort({ 'messages.timestamp': -1 }) // Sort by the latest message timestamp
             .populate({
                 path: 'members',
-                select: 'first_name last_name', // Optional: Populate member details
+                select: 'first_name last_name profile_picture', // Optional: Populate member details
             })
             .populate({
                 path: 'messages.senderId',
-                select: 'first_name last_name', // Optional: Populate sender details for latest message
+                select: 'first_name last_name profile_picture', // Optional: Populate sender details for latest message
             });
 
         res.status(200).json({

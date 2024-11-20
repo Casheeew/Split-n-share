@@ -28,3 +28,11 @@ export async function requestToJoinDeal(productId: string): Promise<{ status: st
         method: 'POST',
     });
 }
+
+export async function createChatForTwo(body: any, options?: any): Promise<any> {
+    return request(`/api/groupchats/two`, {
+        method: 'POST',
+        data: body,
+        ...(options || {}),
+    });
+}

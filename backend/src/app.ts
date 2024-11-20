@@ -56,7 +56,7 @@ app.use(mongoSanitize());
 app.use('/api/users', userRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/groupchats', groupChatRoutes);
-app.use('/api/product', productRoutes);
+app.use('/api/products', productRoutes);
 app.use('/api/search', searchRoutes);
 
 app.get('*', (req, res) => {

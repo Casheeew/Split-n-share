@@ -12,6 +12,7 @@ import { Notification } from './components/RightContent';
 import ChatWidget from './components/ChatWidget';
 
 import "./app.css";
+import { ChatContextProvider } from './ChatContext';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -117,7 +118,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     childrenRender: (children) => {
       // if (initialState?.loading) return <PageLoading />;
       return (
-        <>
+        <ChatContextProvider>
           {children}
           {isDev && (
             <SettingDrawer
@@ -143,7 +144,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
           </div> */}
 
           <ChatWidget />
-        </>
+        </ChatContextProvider>
       );
     },
     ...initialState?.settings,

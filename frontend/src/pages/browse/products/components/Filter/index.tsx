@@ -7,9 +7,10 @@ type MenuItem = Required<MenuProps>['items'][number];
 const items: MenuItem[] = [
   {
     key: 'all_categories',
-    label: 'All Categories',
+    label: 'Categories',
     type: 'group',
     children: [
+      { key: 'all', label: 'All Categories' },
       { key: 'food_drink', label: 'Food & Drink' },
       { key: 'health_beauty', label: 'Health & Beauty' },
       { key: 'electronics', label: 'Electronics' },
