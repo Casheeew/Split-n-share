@@ -8,12 +8,15 @@ import {
   removeMemberFromGroupChat,
   sendMessage,
   getMessages,
+  createTwoPersonChat
 } from "../controllers/groupchat";
 import { protect } from "../controllers/auth";
 
 const router = express.Router();
 
 router.use(protect);
+
+router.post('/two', createTwoPersonChat);
 
 router.route("/")
   .get(getAllGroupChats)
@@ -32,5 +35,6 @@ router.route("/:id/members/:userId")
 router.route("/:id/messages")
   .get(getMessages)
   .post(sendMessage);
+
 
 export default router;
