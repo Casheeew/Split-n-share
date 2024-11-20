@@ -24,10 +24,9 @@ router.route("/")
 
 router.route("/:id")
   .get(getGroupChat)
-  .delete(deleteGroupChat);
-
-router.route("/:id/members")
+  .delete(deleteGroupChat)
   .post(addMemberToGroupChat);
+
 
 router.route("/:id/members/:userId")
   .delete(removeMemberFromGroupChat);
