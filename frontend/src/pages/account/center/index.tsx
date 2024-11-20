@@ -23,7 +23,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -38,7 +37,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),
@@ -53,7 +51,6 @@ const operationTabList = [
             fontSize: 14,
           }}
         >
-          (8)
         </span>
       </span>
     ),

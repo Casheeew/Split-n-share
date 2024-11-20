@@ -59,9 +59,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     actionsRender: () => [
       <Search style={{ width: "55vw", margin: '24px' }} key="Input" onSearch={(value) => {
-        console.log(value);
-        // todo! search
-        // todo! change icon
+        window.location.href = `/browse/products?key=${value}`
       }} placeholder="Search for anything on Split-n'-share!" />,
       <SelectLang key="SelectLang" />,
       <Question key="help" />,

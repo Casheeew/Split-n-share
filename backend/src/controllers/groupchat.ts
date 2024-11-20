@@ -1,7 +1,7 @@
 import express, { NextFunction, Request, Response } from "express";
 import GroupChat from "../models/groupchat";
 import Product from "../models/product";
-import User from "../models/user"; // Ensure User model is imported
+import User from "../models/user"; 
 import { getAll, getOne, deleteOne } from "./base";
 
 const router = express.Router();
@@ -39,7 +39,7 @@ export const createGroupChat = async (req: Request, res: Response, next: NextFun
 
 export const deleteGroupChat = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = res.locals.user._id; // Extracted from authenticated user
+        const userId = res.locals.user._id; 
         const chatId = req.params.id;
 
         const groupChat = await GroupChat.findById(chatId);
@@ -49,7 +49,6 @@ export const deleteGroupChat = async (req: Request, res: Response, next: NextFun
         console.log(groupChat.host);
         console.log(userId);
 
-        // Only the host can delete the group chat
         if (groupChat.host.toString() !== userId.toString()) {
             return res.status(403).json({ error: "You do not have permission to delete this group chat" });
         }
@@ -63,7 +62,7 @@ export const deleteGroupChat = async (req: Request, res: Response, next: NextFun
 
 export const addMemberToGroupChat = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId } = req.body; // ID of the user to add
+        const { userId } = req.body; 
         const chatId = req.params.id;
 
         const groupChat = await GroupChat.findById(chatId);

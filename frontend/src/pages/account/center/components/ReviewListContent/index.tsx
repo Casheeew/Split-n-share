@@ -21,7 +21,7 @@ const ReviewListContent: React.FC<ReviewProps> = ({
       <div className={styles.description}>{text}</div>
       <div className={styles.extra}>
         <Avatar src={targetUser.profile_picture} size="small" />
-        <a href={`/account/center/${targetUser._id}`}>{`${targetUser.first_name} ${targetUser.last_name}`}</a> left a review
+        <a href={`/account/center/${targetUser._id}`}>{`${targetUser.first_name} ${targetUser.last_name}`}</a>
         <em>{dayjs(created_at).format('YYYY-MM-DD HH:mm')}</em>
       </div>
     </div>
