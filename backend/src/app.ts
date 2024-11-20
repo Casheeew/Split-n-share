@@ -54,7 +54,6 @@ app.use(mongoSanitize());
 
 // Define more routes here
 app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/groupchats', groupChatRoutes);
 app.use('/api/product', productRoutes);

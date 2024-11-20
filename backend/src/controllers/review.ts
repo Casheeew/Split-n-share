@@ -63,16 +63,62 @@ export const postReview = async (req: Request, res: Response, next: NextFunction
             text,
         });
 
-        await newReview.save();
+        const savedReview = await newReview.save(); // Save and get the full document
 
         // Update given_reviews and received_reviews
-        await User.findByIdAndUpdate(author, { $push: { given_reviews: newReview._id } });
-        await User.findByIdAndUpdate(target, { $push: { received_reviews: newReview._id } });
+        await User.findByIdAndUpdate(author, { $push: { given_reviews: savedReview._id } });
+        await User.findByIdAndUpdate(target, { $push: { received_reviews: savedReview._id } });
 
-        res.status(200).json({ message: 'Success' });
+        res.status(201).json({
+            status: 'success',
+            data: savedReview, // Return the full review, including the ID
+        });
     } catch (err) {
         next(err);
     }
-}
+};
+
+export const likeReview = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId } = req.body; // Get the userId from the request body
+        const { id } = req.params; // Get the review ID from the request params
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        // Find the review by ID
+        const review = await Review.findById(id);
+
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        const alreadyLiked = review.likes.includes(userId);
+
+        if (alreadyLiked) {
+            // If the user has already liked, remove the like (unlike)
+            review.likes = review.likes.filter((id) => id.toString() !== userId);
+        } else {
+            // Otherwise, add the like
+            review.likes.push(userId);
+        }
+
+        // Save the updated review
+        await review.save();
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                id: review._id,
+                likes: review.likes, // Return the updated likes array
+                likeCount: review.likes.length,
+            },
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 
 export default router;

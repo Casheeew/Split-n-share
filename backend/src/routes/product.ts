@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllProducts, createProduct, getProduct, updateProduct, deleteProduct } from '../controllers/product';
+import { getAllProducts, createProduct, getProduct, updateProduct, deleteProduct, getUserProducts } from '../controllers/product';
 import { protect } from '../controllers/auth';
 
 const router = express.Router();
@@ -19,5 +19,8 @@ router
     .get(getProduct)
     .patch(updateProduct)
     .delete(deleteProduct);
+
+router.get('/user/:userId', getUserProducts);
+
 
 export default router;
