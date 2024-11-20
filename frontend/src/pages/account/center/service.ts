@@ -33,6 +33,19 @@ export async function queryUser(params: UserParams, options?: { [key: string]: a
   });
 }
 
+export async function queryProducts(
+  params: any,
+): Promise<{
+  data: {
+    status: string,
+    data: any,
+  }
+}> {
+  return request(`/api/products`, {
+    params,
+  });
+}
+
 export async function queryReviews(params: {
   author?: string;
   target?: string;

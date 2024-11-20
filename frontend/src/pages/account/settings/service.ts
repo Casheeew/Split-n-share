@@ -27,3 +27,18 @@ export async function queryCity(province: string): Promise<{ data: GeographicIte
 export async function query() {
   return request('/api/users');
 }
+
+/** 获取当前的用户 PATCH /api/currentUser */
+export async function updateUser(body: any, options?: { [key: string]: any }) {
+  const token = localStorage.getItem('token')?.split(" ")[1];
+
+  const decoded = token !== undefined ? jwt.decode(token) as any : { id: 'undefined' };
+
+  return request<{
+    data: { data: API.CurrentUser; }
+  }>(`/api/users/${decoded.id}`, {
+    method: 'PATCH',
+    data: body,
+    ...(options || {}),
+  });
+}

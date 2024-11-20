@@ -19,11 +19,11 @@ const items: MenuItem[] = [
   },
 ];
 
-const FilterMenu: React.FC = () => {
-  const onClick: MenuProps['onClick'] = (e) => {
-    console.log('click ', e.key);
-    // todo! hookup filtering logic
-  };
+type FilterMenuProps = {
+  onClick: MenuProps['onClick'];
+}
+
+const FilterMenu: React.FC<FilterMenuProps> = ({onClick}) => {
 
   return (
     <Menu

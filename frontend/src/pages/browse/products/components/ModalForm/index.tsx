@@ -79,6 +79,73 @@ const CreatePostingModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel
         return e?.fileList;
     };
 
+    const pickupLocationOptions = [
+        {
+            value: 'other',
+            label: 'Other Methods of Delivery (Please note in Joint-Product Information)',
+        },
+        {
+            value: 'sejonggwan',
+            label: 'E8 - Sejong Hall',
+        },
+        {
+            value: 'jihyegwan',
+            label: 'N21 - Jihye Hall',
+        },
+        {
+            value: 'silloegwan',
+            label: 'N20 - Silloe Hall',
+        },
+        {
+            value: 'areumgwan',
+            label: 'N19 - Areum Hall',
+        },
+        {
+            value: 'jilligwan',
+            label: 'N18 - Jilli Hall',
+        },
+        {
+            value: 'seongsilgwan',
+            label: 'N17 - Seongsil Hall',
+        },
+        {
+            value: 'somanggwan',
+            label: 'N16 - Somang Hall',
+        },
+        {
+            value: 'saranggwan',
+            label: 'N14 - Sarang Hall',
+        },
+        {
+            value: 'mirgwan',
+            label: 'W6 - Mir Hall',
+        },
+        {
+            value: 'naraegwan',
+            label: 'W6 - Narae Hall',
+        },
+        {
+            value: 'yejigwan',
+            label: 'W5 - Yeji Hall',
+        },
+        {
+            value: 'heemanggwan',
+            label: 'W4-4 - Heemang Hall',
+        },
+        {
+            value: 'dasomgwan',
+            label: 'W4-3 - Dasom Hall',
+        },
+        {
+            value: 'nadlgwan',
+            label: 'W4-2 - Nadl Hall',
+        },
+        {
+            value: 'yeoulgwan',
+            label: 'W4-1 - Yeoul Hall',
+        },
+    ];
+
     return (
         <Modal
             width={1000}
@@ -135,6 +202,11 @@ const CreatePostingModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel
                         <Select.Option value="electronics">Electronics</Select.Option>
                         <Select.Option value="home_kitchen">Home & Kitchen</Select.Option>
                         <Select.Option value="outdoors">Outdoors</Select.Option>
+                    </Select>
+                </Form.Item>
+                <Form.Item name="pickup_location" label="Pickup Location">
+                    <Select placeholder='Select a location.' options={pickupLocationOptions}>
+
                     </Select>
                 </Form.Item>
                 <Form.Item name="price" label="Price" rules={[{ required: true, message: 'Please enter the price of the product.' }]}>

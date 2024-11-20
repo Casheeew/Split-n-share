@@ -33,6 +33,8 @@ const ProductGrid: FC = () => {
   const { currentUser } = initialState || {};
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [filter, setFilter] = useState<any>({});
+
   const { styles } = useStyles();
   const { data, loading, refresh, run } = useRequest((values: any) => {
     // todo! filter
@@ -169,6 +171,10 @@ const ProductGrid: FC = () => {
     setModalOpen(true);
   }
 
+  const handleFilterMenuClick = () => {
+    
+  }
+
   // const handleModalOk = () => {
   //   setModalLoading(true);
 
@@ -188,7 +194,7 @@ const ProductGrid: FC = () => {
         <Col span={1}>
         </Col>
         <Col span={4}>
-          <FilterMenu />
+          <FilterMenu onClick={handleFilterMenuClick} />
         </Col>
         <Col span={18}>
           <div className={styles.coverCardList}>

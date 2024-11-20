@@ -8,7 +8,7 @@ import Articles from './components/Articles';
 import Projects from './components/Projects';
 import Cobuyers from './components/Cobuyers';
 import type { CurrentUser, tabKeyType } from './data.d';
-import { queryCurrentUser, queryUser, queryReviews, createReview as apiCreateReview } from './service';
+import { queryCurrentUser, queryUser, queryReviews, createReview as apiCreateReview, queryProducts } from './service';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 
@@ -47,7 +47,7 @@ const operationTabList = [
     key: 'postings',
     tab: (
       <span>
-        Your Postings{' '}
+        Postings{' '}
         <span
           style={{
             fontSize: 14,
@@ -278,6 +278,16 @@ const Center: React.FC = () => {
     });
   });
 
+  //  获取用户信息
+  const { data: productsData, loading: productsLoading } = useRequest(() => {
+    if (userId === undefined) {
+      return queryProducts({ creator: currentUserId });;
+    }
+    return queryProducts({ creator: userId });
+  }, { refreshDeps: [userId]});
+
+  const products = productsData?.data;
+
   useEffect(() => {
     runReceived();
     runGiven();
@@ -332,7 +342,7 @@ const Center: React.FC = () => {
     if (tabValue === 'postings') {
       // todo!
       // return <Projects data={data} />;
-      return <Projects data={[]} />;
+      return <Projects data={products} loading={productsLoading} />;
     }
 
     if (tabValue === 'given_reviews') {

@@ -27,6 +27,7 @@ const userSchema: Schema = new Schema({
   desc: { type: String, default: '' },
   dorm: { type: String, default: '' },
   department: { type: String, default: '' },
+  phone: { type: String, default: '' },
   profile_picture: {
     type: String,
     default: 'https://www.gravatar.com/avatar/3b3be63a4c2a439b013787725dfce802?d=identicon',

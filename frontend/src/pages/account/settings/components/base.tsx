@@ -10,7 +10,7 @@ import {
 import { useRequest } from '@umijs/max';
 import { Button, Input, message, Upload } from 'antd';
 import React from 'react';
-import { queryCity, currentUser as queryCurrentUser, queryProvince } from '../service';
+import { queryCity, currentUser as queryCurrentUser, updateUser } from '../service';
 import useStyles from './index.style';
 
 const validatorPhone = (rule: any, value: string[], callback: (message?: string) => void) => {
@@ -34,7 +34,7 @@ const BaseView: React.FC = () => {
       </div>
       <Upload showUploadList={false}>
         <div className={styles.button_view}>
-          <Button>
+          <Button disabled>
             <UploadOutlined />
             Upload image
           </Button>
@@ -58,8 +58,20 @@ const BaseView: React.FC = () => {
     }
     return '';
   };
-  const handleFinish = async () => {
-    message.success('Updated user settings!');
+  const handleFinish = async (values: any) => {
+    values.phone = values.phone.join('-')
+    try {
+      await updateUser(values);
+      message.success('Updated user settings!');
+      const urlParams = new URL(window.location.href).searchParams;
+      setTimeout(() => {
+        window.location.href = urlParams.get('redirect') || '/';
+      }, 400)
+
+      return;
+    } catch {
+      message.error('An error occured');
+    }
   };
   return (
     <div className={styles.baseView}>
@@ -104,7 +116,7 @@ const BaseView: React.FC = () => {
                 ]}
               /> */}
               <ProFormTextArea
-                name="profile"
+                name="desc"
                 label="About Me"
                 // rules={[
                 //   {
@@ -114,6 +126,7 @@ const BaseView: React.FC = () => {
                 // ]}
                 placeholder="Write something about yourself."
               />
+
               <ProFormSelect
                 width="sm"
                 name="dorm"
@@ -186,12 +199,31 @@ const BaseView: React.FC = () => {
                     label: 'W4-1 - Yeoul Hall',
                   },
                   {
-                    value: 'outside',
+                    value: 'other',
                     label: 'Outside of Main Campus',
                   },
                 ]}
               />
-  
+
+              <ProFormSelect
+                width="sm"
+                name="department"
+                label="(Optional) Department"
+                options={[
+                  {
+                    value: 'soc',
+                    label: 'School of Computing',
+                  },
+                  {
+                    value: 'fresh',
+                    label: 'School of Freshman',
+                  },
+                  {
+                    value: 'other',
+                    label: 'Other',
+                  },
+                ]} />
+
               {/* <ProFormText
                 width="md"
                 name="address"
