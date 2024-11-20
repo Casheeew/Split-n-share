@@ -20,7 +20,6 @@ import { CommentOutlined } from '@ant-design/icons';
 import { ChatContext } from '@/ChatContext';
 
 const { Title, Paragraph, Text } = Typography;
-const { Title, Paragraph, Text } = Typography;
 
 const Product: React.FC = () => {
 	const { setChatOpen } = useContext(ChatContext);
