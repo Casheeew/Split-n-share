@@ -9,7 +9,7 @@ export interface IMessage {
 
 // Interface for GroupChat
 export interface IGroupChat extends Document {
-  productId: Types.ObjectId; // Associated product ID
+  productId?: Types.ObjectId; // Associated product ID
   host: Types.ObjectId; // Host (creator) of the group chat
   members: Types.ObjectId[]; // Array of member IDs
   messages: IMessage[];

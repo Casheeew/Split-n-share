@@ -1,4 +1,5 @@
-import type { Request, Response, NextFunction } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
+
 import type { ListItem } from './types';
 import { getAll, getOne, updateOne, deleteOne, createOne } from '../base';
 import Product from '../../models/product';
@@ -116,6 +117,9 @@ const user = [
 //   });
 // }
 
+const router = express.Router();
+
+
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => getAll(Product, req, res, next);
 export const getProduct = async (req: Request, res: Response, next: NextFunction) => getOne(Product, req, res, next);
 
@@ -123,3 +127,29 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => updateOne(Product, req, res, next);
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => deleteOne(Product, req, res, next);
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => createOne(Product, req, res, next);
+
+export const getUserProducts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+      const { userId } = req.params; // Extract userId from route parameter
+
+      // Validate if userId is provided
+      if (!userId) {
+          return res.status(400).json({
+              status: 'fail',
+              message: 'User ID is required',
+          });
+      }
+
+      // Fetch products created by the specified user
+      const userProducts = await Product.find({ creator: userId });
+
+      // Respond with the results
+      res.status(200).json({
+          status: 'success',
+          results: userProducts.length,
+          data: userProducts,
+      });
+  } catch (err) {
+      next(err); // Pass error to global error handler
+  }
+};
