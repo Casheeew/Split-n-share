@@ -16,7 +16,7 @@ import {
 } from 'antd';
 import { queryProducts, queryUser, requestToJoinDeal } from './service';
 import React, { useEffect, useState } from 'react';
-import jwt from 'jsonwebtoken'; // Add JWT for decoding the token
+import jwt from 'jsonwebtoken'; 
 import { CommentOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text } = Typography;
@@ -24,7 +24,6 @@ const { Title, Paragraph, Text } = Typography;
 const Product: React.FC = () => {
     const { productId } = useParams();
 
-    // Decode current user ID from token
     const token = localStorage.getItem('token')?.split(' ')[1];
     const decoded = token ? (jwt.decode(token) as any) : { id: undefined };
     const currentUserId = decoded.id;
@@ -123,23 +122,25 @@ const Product: React.FC = () => {
                                 </Space>
                             )}
                             {creator && (
-                                <>
-                                <Space size='large'>
+                                <Space size="large">
                                     <Link to={`/account/center/${creator._id}`}>
                                         <Space>
                                             <Avatar src={creator.profile_picture} />
                                             <Text>{`${creator.first_name} ${creator.last_name}`}</Text>
                                         </Space>
                                     </Link>
-                                    {currentUserId !== product.creator && (                 
-                                            <Button
-                                                icon={<CommentOutlined/>}
-                                                type='primary'                                          
-                                                onClick={() => { }}
-                                            >Chat with Host</Button>                                
+                                    {currentUserId !== product.creator && (
+                                        <Button
+                                            icon={<CommentOutlined />}
+                                            type="primary"
+                                            onClick={() => {
+                                                message.info('Chat feature is not implemented yet.');
+                                            }}
+                                        >
+                                            Chat with Host
+                                        </Button>
                                     )}
-                                    </Space>
-                                </>
+                                </Space>
                             )}
                             <Divider />
                             <Text
@@ -161,22 +162,36 @@ const Product: React.FC = () => {
                             <Paragraph>{product.joint_purchase_information || 'No details available.'}</Paragraph>
                         </Typography>
 
-                        {requestStatus ? (
-                            <Button
-                                type="default"
-                                style={{ marginTop: 20 }}
-                                onClick={() => setIsModalOpen(true)}
-                            >
-                                Cancel Request
-                            </Button>
-                        ) : (
-                            <Button
-                                type="primary"
-                                style={{ marginTop: 20 }}
-                                onClick={() => setIsModalOpen(true)}
-                            >
-                                Request to Join Deal
-                            </Button>
+                        {creator && (
+                            currentUserId === product.creator ? (
+                                <Button
+                                    type="primary"
+                                    style={{ marginTop: 20 }}
+                                    onClick={() => {
+                                        message.info('Group Chat opened.');
+                                    }}
+                                >
+                                    Open Group Chat
+                                </Button>
+                            ) : (
+                                requestStatus ? (
+                                    <Button
+                                        type="default"
+                                        style={{ marginTop: 20 }}
+                                        onClick={() => setIsModalOpen(true)}
+                                    >
+                                        Cancel Request
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        type="primary"
+                                        style={{ marginTop: 20 }}
+                                        onClick={() => setIsModalOpen(true)}
+                                    >
+                                        Request to Join Deal
+                                    </Button>
+                                )
+                            )
                         )}
 
                         <Typography>

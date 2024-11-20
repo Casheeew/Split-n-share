@@ -177,7 +177,7 @@ const ProductGrid: FC = () => {
       <Row gutter={24}>
         <Col span={1}></Col>
         <Col span={4}>
-          <FilterMenu onClick={({ key }) => handleCategoryChange(key)} /> {/* Handle category filter */}
+          <FilterMenu onClick={({ key }) => handleCategoryChange(key)} /> 
         </Col>
         <Col span={18}>
           <div className={styles.coverCardList}>
@@ -185,7 +185,6 @@ const ProductGrid: FC = () => {
               <Form
                 layout="inline"
                 onValuesChange={(_, values) => {
-                  // Optional: Add additional filters here
                 }}
               >
                 <StandardFormRow title="Filter" grid last>
