@@ -207,7 +207,7 @@ const Product: React.FC = () => {
                 <p>
                     {requestStatus
                         ? 'Are you sure you want to cancel your request?'
-                        : 'Would you like to join this deal? The host will be notified after you submit the request.'}
+                        : 'Would you like to join this deal? The host will be notified after your submission.'}
                 </p>
             </Modal>
         </>
