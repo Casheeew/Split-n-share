@@ -24,6 +24,15 @@ app.use(cors());
 // Set security HTTP headers
 app.use(helmet());
 
+app.use(
+    helmet.contentSecurityPolicy({
+      useDefaults: true, // Use Helmet's default directives for other resources
+      directives: {
+        'img-src': ['*'], // Allow all image sources
+      },
+    })
+  );
+
 app.use(express.static(path.join('../frontend', 'dist')));
 
 // Limit request from the same API 
