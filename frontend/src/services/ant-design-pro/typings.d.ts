@@ -3,30 +3,26 @@
 
 declare namespace API {
   type CurrentUser = {
-    name?: string;
-    avatar?: string;
-    userid?: string;
-    email?: string;
-    signature?: string;
-    title?: string;
-    group?: string;
-    tags?: { key?: string; label?: string }[];
-    notifyCount?: number;
-    unreadCount?: number;
-    country?: string;
-    access?: string;
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-    address?: string;
+    _id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    password: string;
+    desc?: string;
+    dorm?: string;
     phone?: string;
+    profile_picture?: string;
+    given_reviews: mongoose.Types.ObjectId[];
+    received_reviews: mongoose.Types.ObjectId[];
+    join_date: Date;
   };
 
   type LoginResult = {
-    status?: string;
-    type?: string;
-    currentAuthority?: string;
+    data?: {
+      status?: string;
+      user?: any;
+      token?: string;
+    }
   };
 
   type PageParams = {

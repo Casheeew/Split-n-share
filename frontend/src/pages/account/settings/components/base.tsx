@@ -10,7 +10,7 @@ import {
 import { useRequest } from '@umijs/max';
 import { Button, Input, message, Upload } from 'antd';
 import React from 'react';
-import { queryCity, queryCurrent, queryProvince } from '../service';
+import { queryCity, currentUser as queryCurrentUser, updateUser } from '../service';
 import useStyles from './index.style';
 
 const validatorPhone = (rule: any, value: string[], callback: (message?: string) => void) => {
@@ -28,35 +28,50 @@ const BaseView: React.FC = () => {
   // 头像组件 方便以后独立，增加裁剪之类的功能
   const AvatarView = ({ avatar }: { avatar: string }) => (
     <>
-      <div className={styles.avatar_title}>头像</div>
+      <div className={styles.avatar_title}>Profile Picture</div>
       <div className={styles.avatar}>
         <img src={avatar} alt="avatar" />
       </div>
       <Upload showUploadList={false}>
         <div className={styles.button_view}>
-          <Button>
+          <Button disabled>
             <UploadOutlined />
-            更换头像
+            Upload image
           </Button>
         </div>
       </Upload>
     </>
   );
-  const { data: currentUser, loading } = useRequest(() => {
-    return queryCurrent();
+  const { data: currentUserData, loading } = useRequest(() => {
+    return queryCurrentUser();
   });
+
+  const currentUser = currentUserData?.data;
+
   const getAvatarURL = () => {
     if (currentUser) {
-      if (currentUser.avatar) {
-        return currentUser.avatar;
+      if (currentUser.profile_picture) {
+        return currentUser.profile_picture;
       }
       const url = 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
       return url;
     }
     return '';
   };
-  const handleFinish = async () => {
-    message.success('更新基本信息成功');
+  const handleFinish = async (values: any) => {
+    values.phone = values.phone.join('-')
+    try {
+      await updateUser(values);
+      message.success('Updated user settings!');
+      const urlParams = new URL(window.location.href).searchParams;
+      setTimeout(() => {
+        window.location.href = urlParams.get('redirect') || '/';
+      }, 400)
+
+      return;
+    } catch {
+      message.error('An error occured');
+    }
   };
   return (
     <div className={styles.baseView}>
@@ -68,18 +83,18 @@ const BaseView: React.FC = () => {
               onFinish={handleFinish}
               submitter={{
                 searchConfig: {
-                  submitText: '更新基本信息',
+                  submitText: 'Update Settings',
                 },
                 render: (_, dom) => dom[1],
               }}
               initialValues={{
                 ...currentUser,
-                phone: currentUser?.phone.split('-'),
+                phone: currentUser?.phone?.split('-'),
               }}
               hideRequiredMark
             >
-              <ProFormText
-                width="md"
+              {/* <ProFormText
+                width="lg"
                 name="email"
                 label="邮箱"
                 rules={[
@@ -88,9 +103,9 @@ const BaseView: React.FC = () => {
                     message: '请输入您的邮箱!',
                   },
                 ]}
-              />
-              <ProFormText
-                width="md"
+              /> */}
+              {/* <ProFormText
+                width="lg"
                 name="name"
                 label="昵称"
                 rules={[
@@ -99,97 +114,117 @@ const BaseView: React.FC = () => {
                     message: '请输入您的昵称!',
                   },
                 ]}
-              />
+              /> */}
               <ProFormTextArea
-                name="profile"
-                label="个人简介"
-                rules={[
-                  {
-                    required: true,
-                    message: '请输入个人简介!',
-                  },
-                ]}
-                placeholder="个人简介"
+                name="desc"
+                label="About Me"
+                // rules={[
+                //   {
+                //     required: true,
+                //     message: '请输入个人简介!',
+                //   },
+                // ]}
+                placeholder="Write something about yourself."
               />
+
               <ProFormSelect
                 width="sm"
-                name="country"
-                label="国家/地区"
+                name="dorm"
+                label="Dormitory"
                 rules={[
                   {
                     required: true,
-                    message: '请输入您的国家或地区!',
+                    message: 'Please enter the dormitory you are living in!',
                   },
                 ]}
                 options={[
                   {
-                    label: '中国',
-                    value: 'China',
+                    value: 'E8 - Sejong Hall',
+                    label: 'E8 - Sejong Hall',
+                  },
+                  {
+                    value: 'N21 - Jihye Hall',
+                    label: 'N21 - Jihye Hall',
+                  },
+                  {
+                    value: 'N20 - Silloe Hall',
+                    label: 'N20 - Silloe Hall',
+                  },
+                  {
+                    value: 'N19 - Areum Hall',
+                    label: 'N19 - Areum Hall',
+                  },
+                  {
+                    value: 'N18 - Jilli Hall',
+                    label: 'N18 - Jilli Hall',
+                  },
+                  {
+                    value: 'N17 - Seongsil Hall',
+                    label: 'N17 - Seongsil Hall',
+                  },
+                  {
+                    value: 'N16 - Somang Hall',
+                    label: 'N16 - Somang Hall',
+                  },
+                  {
+                    value: 'N14 - Sarang Hall',
+                    label: 'N14 - Sarang Hall',
+                  },
+                  {
+                    value: 'W6 - Mir Hall',
+                    label: 'W6 - Mir Hall',
+                  },
+                  {
+                    value: 'W6 - Narae Hall',
+                    label: 'W6 - Narae Hall',
+                  },
+                  {
+                    value: 'W5 - Yeji Hall',
+                    label: 'W5 - Yeji Hall',
+                  },
+                  {
+                    value: 'W4-4 - Heemang Hall',
+                    label: 'W4-4 - Heemang Hall',
+                  },
+                  {
+                    value: 'W4-3 - Dasom Hall',
+                    label: 'W4-3 - Dasom Hall',
+                  },
+                  {
+                    value: 'W4-2 - Nadl Hall',
+                    label: 'W4-2 - Nadl Hall',
+                  },
+                  {
+                    value: 'W4-1 - Yeoul Hall',
+                    label: 'W4-1 - Yeoul Hall',
+                  },
+                  {
+                    value: 'Outside of Main Campus',
+                    label: 'Outside of Main Campus',
                   },
                 ]}
               />
 
-              <ProForm.Group title="所在省市" size={8}>
-                <ProFormSelect
-                  rules={[
-                    {
-                      required: true,
-                      message: '请输入您的所在省!',
-                    },
-                  ]}
-                  width="sm"
-                  fieldProps={{
-                    labelInValue: true,
-                  }}
-                  name="province"
-                  className={styles.item}
-                  request={async () => {
-                    return queryProvince().then(({ data }) => {
-                      return data.map((item) => {
-                        return {
-                          label: item.name,
-                          value: item.id,
-                        };
-                      });
-                    });
-                  }}
-                />
-                <ProFormDependency name={['province']}>
-                  {({ province }) => {
-                    return (
-                      <ProFormSelect
-                        params={{
-                          key: province?.value,
-                        }}
-                        name="city"
-                        width="sm"
-                        rules={[
-                          {
-                            required: true,
-                            message: '请输入您的所在城市!',
-                          },
-                        ]}
-                        disabled={!province}
-                        className={styles.item}
-                        request={async () => {
-                          if (!province?.key) {
-                            return [];
-                          }
-                          return queryCity(province.key || '').then(({ data }) => {
-                            return data.map((item) => {
-                              return {
-                                label: item.name,
-                                value: item.id,
-                              };
-                            });
-                          });
-                        }}
-                      />
-                    );
-                  }}
-                </ProFormDependency>
-              </ProForm.Group>
-              <ProFormText
+              <ProFormSelect
+                width="sm"
+                name="department"
+                label="(Optional) Department"
+                options={[
+                  {
+                    value: 'School of Computing',
+                    label: 'School of Computing',
+                  },
+                  {
+                    value: 'School of Freshman',
+                    label: 'School of Freshman',
+                  },
+                  {
+                    value: 'Other',
+                    label: 'Other',
+                  },
+                ]} />
+
+              {/* <ProFormText
                 width="md"
                 name="address"
                 label="街道地址"
@@ -199,21 +234,17 @@ const BaseView: React.FC = () => {
                     message: '请输入您的街道地址!',
                   },
                 ]}
-              />
+              /> */}
               <ProFormFieldSet
                 name="phone"
-                label="联系电话"
+                label="(Optional) Phone Number"
                 rules={[
-                  {
-                    required: true,
-                    message: '请输入您的联系电话!',
-                  },
                   {
                     validator: validatorPhone,
                   },
                 ]}
               >
-                <Input className={styles.area_code} />
+                <Input className={styles.area_code} defaultValue={'010'} />
                 <Input className={styles.phone_number} />
               </ProFormFieldSet>
             </ProForm>

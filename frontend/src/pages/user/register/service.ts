@@ -1,8 +1,9 @@
 import { request } from '@umijs/max';
 
-export interface StateType {
-  status?: 'ok' | 'error';
-  currentAuthority?: 'user' | 'guest' | 'admin';
+export interface UserData {
+  status?: 'success' | 'error';
+  name: string;
+  token: string;
 }
 
 export interface UserRegisterParams {
@@ -15,7 +16,7 @@ export interface UserRegisterParams {
 }
 
 export async function fakeRegister(params: UserRegisterParams) {
-  return request('/api/register', {
+  return request('/api/users/register', {
     method: 'POST',
     data: params,
   });

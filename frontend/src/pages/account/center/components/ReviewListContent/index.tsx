@@ -5,26 +5,24 @@ import useStyles from './index.style';
 
 export type ReviewProps = {
   data: {
-    content?: string;
-    updatedAt?: any;
-    avatar?: string;
-    owner?: string;
-    href?: string;
+    text?: string;
+    created_at?: any;
   };
+  targetUser: any
 };
 // todo!
 const ReviewListContent: React.FC<ReviewProps> = ({
-  data: { content, updatedAt, avatar, owner, href },
+  data: { text, created_at }, targetUser
 }) => {
   const { styles } = useStyles();
   // todo! move avatar to title, move the posting to the bottom
   return (
     <div>
-      <div className={styles.description}>{content}</div>
+      <div className={styles.description}>{text}</div>
       <div className={styles.extra}>
-        <Avatar src={avatar} size="small" />
-        <a href={href}>{owner}</a> left a review
-        <em>{dayjs(updatedAt).format('YYYY-MM-DD HH:mm')}</em>
+        <Avatar src={targetUser.profile_picture} size="small" />
+        <a href={`/account/center/${targetUser._id}`}>{`${targetUser.first_name} ${targetUser.last_name}`}</a>
+        <em>{dayjs(created_at).format('YYYY-MM-DD HH:mm')}</em>
       </div>
     </div>
   );

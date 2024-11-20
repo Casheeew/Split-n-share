@@ -51,13 +51,7 @@ export default [
     routes: [
       {
         path: '/form',
-        redirect: '/form/basic-form',
-      },
-      {
-        name: 'basic-form',
-        icon: 'smile',
-        path: '/form/basic-form',
-        component: './form/basic-form',
+        redirect: '/form/step-form',
       },
       {
         name: 'step-form',
@@ -65,69 +59,40 @@ export default [
         path: '/form/step-form',
         component: './form/step-form',
       },
+    ],
+  },
+  {
+    path: '/products',
+    hideInMenu: true,
+    name: 'products',
+    routes: [
       {
-        name: 'advanced-form',
-        icon: 'smile',
-        path: '/form/advanced-form',
-        component: './form/advanced-form',
+        path: '/products',
+        redirect: '/browse/products',
+      },
+      {
+        name: 'products',
+        hideInMenu: true,
+        path: '/products/:productId',
+        component: './products',
       },
     ],
   },
   {
-    path: '/list',
+    path: '/browse',
+    hideInMenu: true,
     icon: 'table',
-    name: 'list',
+    name: 'browse',
     routes: [
       {
-        path: '/list/search',
-        name: 'search-list',
-        component: './list/search',
-        routes: [
-          {
-            path: '/list/search',
-            redirect: '/list/search/articles',
-          },
-          {
-            name: 'articles',
-            icon: 'smile',
-            path: '/list/search/articles',
-            component: './list/search/articles',
-          },
-          {
-            name: 'projects',
-            icon: 'smile',
-            path: '/list/search/projects',
-            component: './list/search/projects',
-          },
-          {
-            name: 'applications',
-            icon: 'smile',
-            path: '/list/search/applications',
-            component: './list/search/applications',
-          },
-        ],
+        path: '/browse',
+        redirect: '/browse/products',
       },
       {
-        path: '/list',
-        redirect: '/list/table-list',
-      },
-      {
-        name: 'table-list',
+        name: 'products',
         icon: 'smile',
-        path: '/list/table-list',
-        component: './table-list',
-      },
-      {
-        name: 'basic-list',
-        icon: 'smile',
-        path: '/list/basic-list',
-        component: './list/basic-list',
-      },
-      {
-        name: 'card-list',
-        icon: 'smile',
-        path: '/list/card-list',
-        component: './list/card-list',
+        path: '/browse/products',
+        component: './browse/products',
       },
     ],
   },
@@ -139,13 +104,7 @@ export default [
     routes: [
       {
         path: '/profile',
-        redirect: '/profile/basic',
-      },
-      {
-        name: 'basic',
-        icon: 'smile',
-        path: '/profile/basic',
-        component: './profile/basic',
+        redirect: '/profile/advanced',
       },
       {
         name: 'advanced',
@@ -211,17 +170,24 @@ export default [
   },
   {
     name: 'account',
+    hideInMenu: true,
     icon: 'user',
     path: '/account',
     routes: [
       {
         path: '/account',
-        redirect: '/account/center',
+        redirect: '/account/center/:userId',
       },
       {
         name: 'center',
         icon: 'smile',
         path: '/account/center',
+        component: './account/center',
+      },
+      {
+        name: 'center',
+        icon: 'smile',
+        path: '/account/center/:userId',
         component: './account/center',
       },
       {
@@ -234,7 +200,7 @@ export default [
   },
   {
     path: '/',
-    redirect: '/list/search/projects',
+    redirect: '/browse/products',
   },
   {
     component: '404',
