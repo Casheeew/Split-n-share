@@ -78,4 +78,47 @@ export const postReview = async (req: Request, res: Response, next: NextFunction
     }
 };
 
+export const likeReview = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId } = req.body; // Get the userId from the request body
+        const { id } = req.params; // Get the review ID from the request params
+
+        if (!userId) {
+            return res.status(400).json({ message: 'User ID is required' });
+        }
+
+        // Find the review by ID
+        const review = await Review.findById(id);
+
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        const alreadyLiked = review.likes.includes(userId);
+
+        if (alreadyLiked) {
+            // If the user has already liked, remove the like (unlike)
+            review.likes = review.likes.filter((id) => id.toString() !== userId);
+        } else {
+            // Otherwise, add the like
+            review.likes.push(userId);
+        }
+
+        // Save the updated review
+        await review.save();
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                id: review._id,
+                likes: review.likes, // Return the updated likes array
+                likeCount: review.likes.length,
+            },
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+
 export default router;

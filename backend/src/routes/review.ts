@@ -1,5 +1,5 @@
 import express from 'express';
-import { getReview, getReviews, postReview, updateReview, deleteReview } from '../controllers/review';
+import { getReview, getReviews, postReview, updateReview, deleteReview, likeReview} from '../controllers/review';
 import { protect } from '../controllers/auth';
 
 const router = express.Router();
@@ -19,5 +19,8 @@ router
     .get(getReview)
     .patch(updateReview)
     .delete(deleteReview);
+
+router.patch('/:id/like', likeReview);
+
 
 export default router;
