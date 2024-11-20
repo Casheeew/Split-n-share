@@ -33,7 +33,7 @@ export const getAllGroupChats = async (req: Request, res: Response, next: NextFu
         next(error);
     }
 };
-    
+
 
 export const getGroupChat = async (req: Request, res: Response, next: NextFunction) =>
     getOne(GroupChat, req, res, next);
@@ -196,60 +196,60 @@ export const removeMemberFromGroupChat = async (req: Request, res: Response, nex
 
 export const sendMessage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const chatId = req.params.id;
-      const userId = res.locals.user; // Authenticated user's ID
-      const { text } = req.body;
-  
-      const groupChat = await GroupChat.findById(chatId);
-      if (!groupChat) {
-        return res.status(404).json({ error: "Group chat not found" });
-      }
-  
-      // Check if the user is a member of the group chat
-    //   if (!groupChat.members.some((member) => member.toString() === userId.toString())) {
-    //     return res.status(403).json({ error: "You are not a member of this group chat" });
-    //   }
-      console.log(groupChat.members);
-      console.log(userId);
-      // Add the message to the group's messages
-      groupChat.messages.push({
-        senderId: userId,
-        text,
-        timestamp: new Date(),
-      });
-  
-      await groupChat.save();
-  
-      res.status(200).json({ message: "Message sent successfully" });
+        const chatId = req.params.id;
+        const userId = res.locals.user; // Authenticated user's ID
+        const { text } = req.body;
+
+        const groupChat = await GroupChat.findById(chatId);
+        if (!groupChat) {
+            return res.status(404).json({ error: "Group chat not found" });
+        }
+
+        // Check if the user is a member of the group chat
+        //   if (!groupChat.members.some((member) => member.toString() === userId.toString())) {
+        //     return res.status(403).json({ error: "You are not a member of this group chat" });
+        //   }
+        //   console.log(groupChat.members);
+        //   console.log(userId);
+        // Add the message to the group's messages
+        groupChat.messages.push({
+            senderId: userId,
+            text,
+            timestamp: new Date(),
+        });
+
+        await groupChat.save();
+
+        res.status(200).json({ message: "Message sent successfully" });
     } catch (error) {
-      next(error);
+        next(error);
     }
-  };
-  
-  export const getMessages = async (req: Request, res: Response, next: NextFunction) => {
+};
+
+export const getMessages = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const chatId = req.params.id;
-      const userId = res.locals.user; // Authenticated user's ID
-  
-      const groupChat = await GroupChat.findById(chatId).populate({
-        path: "messages.senderId",
-        select: "first_name last_name",
-      });
-  
-      if (!groupChat) {
-        return res.status(404).json({ error: "Group chat not found" });
-      }
-  
-    //   // Check if the user is a member of the group chat
-    //   if (!groupChat.members.some((member) => member.toString() === userId.toString())) {
-    //     return res.status(403).json({ error: "You are not a member of this group chat" });
-    //   }
-  
-      res.status(200).json({ messages: groupChat.messages });
+        const chatId = req.params.id;
+        const userId = res.locals.user; // Authenticated user's ID
+
+        const groupChat = await GroupChat.findById(chatId).populate({
+            path: "messages.senderId",
+            select: "first_name last_name",
+        });
+
+        if (!groupChat) {
+            return res.status(404).json({ error: "Group chat not found" });
+        }
+
+        //   // Check if the user is a member of the group chat
+        //   if (!groupChat.members.some((member) => member.toString() === userId.toString())) {
+        //     return res.status(403).json({ error: "You are not a member of this group chat" });
+        //   }
+
+        res.status(200).json({ messages: groupChat.messages });
     } catch (error) {
-      next(error);
+        next(error);
     }
-  };
+};
 
 
 export default router;

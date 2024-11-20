@@ -1,6 +1,6 @@
 import { ChatContext } from '@/ChatContext';
 import { CloseOutlined, CommentOutlined, SendOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Row, Input, Typography, List, Avatar, Skeleton, FloatButton } from 'antd';
+import { Button, Card, Col, Row, Input, Typography, List, Avatar, Skeleton, FloatButton, Divider } from 'antd';
 // import dayjs from 'dayjs';
 import React, { createRef, useContext, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -10,7 +10,8 @@ import { useModel, useRequest } from '@umijs/max';
 import dayjs from 'dayjs';
 
 // Replace with backend's URL
-const socket = io('http://localhost:3080');
+// const socket = io('http://localhost:3080');
+const socket = io('https://split-n-share-olxp.onrender.com/');
 
 socket.on('message-update', (data) => {
     console.log('DB change detected: ', data);
@@ -38,11 +39,11 @@ const Widget: React.FC = () => {
     const { initialState } = useModel('@@initialState');
     const { currentUser } = initialState || {};
 
+    const [inputValue, setInputValue] = useState('');
+
     const { data: chatData, loading } = useRequest(() =>
         queryChats()
     );
-
-    console.log('chatdata', chatData);
 
     //
 
@@ -53,6 +54,20 @@ const Widget: React.FC = () => {
         icon={<CommentOutlined />}
         onClick={() => { setChatOpen(true) }}
     />
+
+    const handleSend = (value: string) => {
+        socket.emit('send message', { value });
+
+        if (chatData.length > 0) {
+            chatData[0].messages.push({
+                senderId: currentUser?._id,
+                text: value,
+                timestamp: Date.now(),
+            });
+        }
+
+        setInputValue('');
+    }
 
     return !chatOpen
         ? chatToggle
@@ -115,7 +130,7 @@ const Widget: React.FC = () => {
                                                                 {`${targetUser.first_name} ${targetUser.last_name}`} &nbsp;<small>{dayjs(item.updatedAt).format('MM/DD HH:mm')}</small>
                                                             </>
                                                         }
-                                                        description={item.messages[0]?.text || 'This is the start of a legendary conversation.'}
+                                                        description={item.messages[item.messages.length - 1]?.text || <small>This is the start of a legendary conversation.</small>}
                                                     />
                                                 </List.Item>
 
@@ -140,7 +155,7 @@ const Widget: React.FC = () => {
                                         }}
                                     >
                                         <InfiniteScroll
-                                            dataLength={data.length}
+                                            dataLength={chatData[0].messages.length}
                                             next={() => false}
                                             hasMore={false}
                                             style={{ display: 'flex', flexDirection: 'column-reverse' }}
@@ -149,32 +164,43 @@ const Widget: React.FC = () => {
                                             // endMessage={<Divider plain>It is all, nothing more 🤐</Divider>}
                                             scrollableTarget="scrollableDiv"
                                         >
-                                            <List
-                                                split={false}
-                                                dataSource={chatData.messages}
-                                                renderItem={(msg: any) => {
-                                                    msg.right = currentUser?._id === msg.senderId;
-                                                    return (
-                                                        <List.Item style={{ float: msg.right ? 'right' : undefined, clear: 'right', padding: '5px', maxWidth: '75%' }}>
-                                                            <Card bodyStyle={{ padding: "12px", backgroundColor: msg.right ? '#f5222d' : '' }}>
-                                                                <Text style={{ color: msg.right ? '#ffffff' : '' }}>{msg.text}</Text>
-                                                            </Card>
-                                                        </List.Item>
-                                                    )
-                                                }}
-                                            />
+                                            {
+
+                                                <>
+                                                    <List
+                                                        split={false}
+                                                        dataSource={chatData[0].messages}
+                                                        renderItem={(msg: any) => {
+                                                            msg.right = currentUser?._id === msg.senderId;
+                                                            console.log(chatData[0].messages.length === 0);
+                                                            return (
+                                                                (
+                                                                    <List.Item style={{ float: msg.right ? 'right' : undefined, clear: 'right', padding: '5px', maxWidth: '75%' }}>
+                                                                        <Card bodyStyle={{ padding: "12px", backgroundColor: msg.right ? '#f5222d' : '' }}>
+                                                                            <Text style={{ color: msg.right ? '#ffffff' : '' }}>{msg.text}</Text>
+                                                                        </Card>
+                                                                    </List.Item>
+                                                                )
+                                                            )
+                                                        }}
+                                                    /><Divider><small style={{color: 'gray'}}>{dayjs(Date.now()).format('MM-DD')}</small></Divider></>}
                                         </InfiniteScroll>
                                     </div>
                                 </div>
                             </Card>
                             <Card bordered={false} bodyStyle={{ padding: '0' }}>
-                                <Input
+                                <Search
+                                    // suffix={
+                                    //     <Button size='small' onClick={() => { }} type="text" shape="circle" icon={<SendOutlined />} />
+                                    // }
                                     key="ChatSearch"
-                                    placeholder="Aa"    
-                                    ref={inputRef}
+                                    placeholder="Aa"
+                                    value={inputValue}
+                                    onSearch={handleSend}
                                     style={{ borderRadius: '0 0 10px' }}
-                                    suffix={
-                                        <Button size='small' onClick={() => { inputRef.current = '' }} type="text" shape="circle" icon={<SendOutlined />} />
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    enterButton={
+                                        <Button size='small' onClick={() => { }} type="text" shape="circle" icon={<SendOutlined />} />
                                     }
                                 />
 
