@@ -17,7 +17,7 @@ const Settings: ProLayoutProps & {
   colorWeak: false,
   title: 'Split-n-Share',
   pwa: true,
-  logo: 'https://i.postimg.cc/qBYCht0x/split-n-share-icon.jpg',
+  logo: 'frontend/public/split-n-share-logo.jpg',
   iconfontUrl: '',
   token: {
     // 参见ts声明，demo 见文档，通过token 修改样式
