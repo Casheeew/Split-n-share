@@ -7,12 +7,13 @@ const router = express.Router();
 router.get('/products', async (req: Request, res: Response) => {
   try {
     // Extract query parameters
-    const { keyword, category } = req.query;
+    const { keyword, category, pick_up_location } = req.query;
 
     // Call the service function
     const products = await searchAndFilterProducts(
       keyword as string,
-      category as string
+      category as string,
+      pick_up_location as string
     );
 
     // Send the results
