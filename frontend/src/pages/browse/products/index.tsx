@@ -191,7 +191,7 @@ const ProductGrid: FC = () => {
                 <StandardFormRow title="Filter" grid last>
                   <Row gutter={16}>
                     <Col lg={8} md={10} sm={10} xs={24}>
-                      <FormItem label="Location" name="dorm">
+                      <FormItem label="Dormitory" name="dorm">
                         <Select
                           placeholder="Any"
                           style={{
