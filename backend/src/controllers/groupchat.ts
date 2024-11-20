@@ -37,6 +37,57 @@ export const createGroupChat = async (req: Request, res: Response, next: NextFun
     }
 };
 
+export const createTwoPersonChat = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const creatorId = res.locals.user._id; // Extract the creator's user ID
+        const { targetId } = req.body; // Extract the target user's ID from the request body
+
+        // Validate IDs
+        if (!creatorId || !targetId) {
+            return res.status(400).json({
+                status: "fail",
+                message: "Both creatorId and targetId are required",
+            });
+        }
+
+        // Check if the target user exists
+        const targetUser = await User.findById(targetId);
+        if (!targetUser) {
+            return res.status(404).json({
+                status: "fail",
+                message: "Target user not found",
+            });
+        }
+
+        // Check if a chat already exists between the two users
+        const existingChat = await GroupChat.findOne({
+            members: { $all: [creatorId, targetId] }, // Ensure both users are in the same chat
+        });
+
+        if (existingChat) {
+            return res.status(200).json({
+                status: "success",
+                message: "Chat already exists",
+                data: existingChat,
+            });
+        }
+
+        // Create a new chat between the two users
+        const newChat = await GroupChat.create({
+            members: [creatorId, targetId],
+            messages: [],
+        });
+
+        res.status(201).json({
+            status: "success",
+            data: newChat,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export const deleteGroupChat = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = res.locals.user._id; // Extracted from authenticated user
