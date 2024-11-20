@@ -63,16 +63,19 @@ export const postReview = async (req: Request, res: Response, next: NextFunction
             text,
         });
 
-        await newReview.save();
+        const savedReview = await newReview.save(); // Save and get the full document
 
         // Update given_reviews and received_reviews
-        await User.findByIdAndUpdate(author, { $push: { given_reviews: newReview._id } });
-        await User.findByIdAndUpdate(target, { $push: { received_reviews: newReview._id } });
+        await User.findByIdAndUpdate(author, { $push: { given_reviews: savedReview._id } });
+        await User.findByIdAndUpdate(target, { $push: { received_reviews: savedReview._id } });
 
-        res.status(200).json({ message: 'Success' });
+        res.status(201).json({
+            status: 'success',
+            data: savedReview, // Return the full review, including the ID
+        });
     } catch (err) {
         next(err);
     }
-}
+};
 
 export default router;

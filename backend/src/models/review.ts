@@ -6,7 +6,7 @@ export interface IReview extends Document {
   rating: number;
   text: string;
   created_at: Date;
-  likes: number;
+  likes: mongoose.Types.ObjectId[];
 }
 
 const reviewSchema: Schema = new Schema({
@@ -15,8 +15,9 @@ const reviewSchema: Schema = new Schema({
   rating: { type: Number, required: true},
   text: { type: String, required: true, maxlength: 5000 },
   created_at: { type: Date, default: Date.now },
-  likes: { type: Number, default: 0 }
+  likes: { type: [mongoose.Schema.Types.ObjectId], ref: 'User', default: [] }, // Array of user IDs
 });
+
 
 const Review = mongoose.model<IReview>('Review', reviewSchema);
 export default Review;
