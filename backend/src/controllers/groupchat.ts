@@ -6,8 +6,34 @@ import { getAll, getOne, deleteOne } from "./base";
 
 const router = express.Router();
 
-export const getAllGroupChats = async (req: Request, res: Response, next: NextFunction) =>
-    getAll(GroupChat, req, res, next);
+export const getAllGroupChats = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = res.locals.user._id; // Current user's ID from authentication middleware
+
+        // Find group chats where the user is a participant (either host or member)
+        const groupChats = await GroupChat.find({
+            members: { $in: [userId] }, // Check if the user is in the members array
+        })
+            .sort({ 'messages.timestamp': -1 }) // Sort by the latest message timestamp
+            .populate({
+                path: 'members',
+                select: 'first_name last_name', // Optional: Populate member details
+            })
+            .populate({
+                path: 'messages.senderId',
+                select: 'first_name last_name', // Optional: Populate sender details for latest message
+            });
+
+        res.status(200).json({
+            status: 'success',
+            results: groupChats.length,
+            data: groupChats,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+    
 
 export const getGroupChat = async (req: Request, res: Response, next: NextFunction) =>
     getOne(GroupChat, req, res, next);
