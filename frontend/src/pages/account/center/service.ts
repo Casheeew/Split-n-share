@@ -23,13 +23,13 @@ export async function queryUser(params: UserParams, options?: { [key: string]: a
   const { id } = params;
 
   return request<{
-      data: {
-          status: string,
-          data: API.CurrentUser[],
-      },
+    data: {
+      status: string,
+      data: API.CurrentUser[],
+    },
   }>(`/api/users/${id}`, {
-      method: 'GET',
-      ...(options || {}),
+    method: 'GET',
+    ...(options || {}),
   });
 }
 
@@ -39,6 +39,22 @@ export async function queryReviews(params: {
 }): Promise<{ data: { data: ListItemDataType[] } }> {
   return request('/api/reviews', {
     params,
+  });
+}
+
+export async function updateReviews(
+  body: any,
+  params: { id: string; },
+  options?: { [key: string]: any }
+): Promise<{ data: { data: ListItemDataType[] } }> {
+  return request('/api/reviews', {
+    method: 'PATCH',
+    params,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
   });
 }
 

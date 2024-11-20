@@ -1,6 +1,6 @@
 import { ClusterOutlined, ContactsOutlined, HomeOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-components';
-import { useRequest } from '@umijs/max';
+import { useParams, useRequest } from '@umijs/max';
 import { Button, Card, Col, Divider, Form, GetProps, Input, message, Modal, Rate, Row, Tag } from 'antd';
 import React, { FC, useEffect, useState } from 'react';
 import useStyles from './Center.style';
@@ -10,6 +10,7 @@ import Cobuyers from './components/Cobuyers';
 import type { CurrentUser, tabKeyType } from './data.d';
 import { queryCurrentUser, queryUser, queryReviews, createReview as apiCreateReview } from './service';
 import dayjs from 'dayjs';
+import jwt from 'jsonwebtoken';
 
 const operationTabList = [
   {
@@ -193,7 +194,13 @@ const WriteReviewModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel, 
 }
 
 const Center: React.FC = () => {
+  const { userId } = useParams();
   const { styles } = useStyles();
+
+  const token = localStorage.getItem('token')?.split(" ")[1];
+
+  const decoded = token !== undefined ? jwt.decode(token) as any : { id: undefined };
+  const currentUserId = decoded.id;
 
   const [tabKey, setTabKey] = useState<tabKeyType>('received_reviews');
   const [modalOpen, setModalOpen] = useState(false);
@@ -230,7 +237,11 @@ const Center: React.FC = () => {
 
   //  获取用户信息
   const { data, loading } = useRequest(() => {
-    return queryCurrentUser();
+    if (userId === undefined) {
+      return queryCurrentUser();
+    } else {
+      return queryUser({ id: userId });
+    }
   });
 
   const currentUser = data?.data;
@@ -253,6 +264,7 @@ const Center: React.FC = () => {
   // 获取tab列表数据
   const { data: receivedReviewAuthors, run: runReceivedReviewAuthors } = useRequest(() => {
     if (receivedReviews === undefined) { return; }
+    if (receivedReviews.data.length === 0) { return; }
     return queryUser({
       id: '[' + receivedReviews.data.map((item) => item.author).join(',') + ']'
     });
@@ -260,6 +272,7 @@ const Center: React.FC = () => {
 
   const { data: givenReviewTargets, run: runGivenReviewTargets } = useRequest(() => {
     if (givenReviews === undefined) { return; }
+    if (givenReviews.data.length === 0) { return; }
     return queryUser({
       id: '[' + givenReviews.data.map((item) => item.target).join(',') + ']'
     });
@@ -325,12 +338,12 @@ const Center: React.FC = () => {
     if (tabValue === 'given_reviews') {
       console.log('Given  -----');
       console.log(givenReviews);
-      return <Articles key="given_reviews" tab="given" data={givenReviews?.data || []} targetUser={givenReviewTargets} />;
+      return <Articles key="given_reviews" tab="given" data={givenReviews?.data || []} targetUsers={givenReviewTargets?.data || []} />;
     }
     if (tabValue === 'received_reviews') {
       console.log('Received  -----');
       console.log(receivedReviews);
-      return <Articles key="received_reviews" tab="received" data={receivedReviews?.data || []} targetUser={receivedReviewAuthors} />;
+      return <Articles key="received_reviews" tab="received" data={receivedReviews?.data || []} targetUsers={receivedReviewAuthors?.data || []} />;
     }
     return null;
   };
@@ -383,10 +396,10 @@ const Center: React.FC = () => {
             </Card>
           </Col>
           <Col lg={17} md={24}>
-            <Card title="Your Past Cobuyers">
+            {(!userId || (currentUserId === userId)) && <Card title="Your Past Cobuyers">
               {/* <Cobuyers data={(listData?.list || [])} /> */}
               <Cobuyers data={([])} />
-            </Card>
+            </Card>}
             <br />
             <Card
               className={styles.tabsCard}
@@ -397,7 +410,7 @@ const Center: React.FC = () => {
                 setTabKey(_tabKey as tabKeyType);
               }}
               tabBarExtraContent={
-                <Button type='primary' size='large' onClick={showModal}>Write a review</Button>
+                userId && (currentUserId !== userId) && <Button type='primary' size='large' onClick={showModal}>Write a review</Button>
               }
             >
               {renderChildrenByTabKey(tabKey)}

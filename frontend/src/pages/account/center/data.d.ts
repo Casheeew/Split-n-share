@@ -56,6 +56,8 @@ export type ListItemDataType = {
   target: mongoose.Types.ObjectId;
   text: string;
   created_at: Date;
+  rating: number;
+  likes: number;
 };
 
 export type ReviewData = any;

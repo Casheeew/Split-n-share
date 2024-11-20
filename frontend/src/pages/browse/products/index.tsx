@@ -65,9 +65,13 @@ const ProductGrid: FC = () => {
             <Card
               className={styles.card}
               hoverable
-              cover={<img alt={item.title}
-                src={item.image[0]}
-              />}
+              cover={
+                <div style={{ overflow: "hidden", width: "100%", height: "170px" }}>
+                  <img alt={item.title} style={{ width: "100%" }}
+                    src={item.image[0]}
+                  />
+                </div>
+              }
             >
               <Card.Meta
                 title={<a>{item.title}</a>}

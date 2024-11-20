@@ -25,7 +25,7 @@ app.use(helmet());
 
 // Limit request from the same API 
 const limiter = rateLimit({
-    max: 1000,
+    max: 3000,
     windowMs: 60 * 60 * 1000,
     message: 'Too Many Request from this IP, please try again in an hour'
 });

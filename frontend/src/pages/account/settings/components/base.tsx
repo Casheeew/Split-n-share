@@ -126,8 +126,28 @@ const BaseView: React.FC = () => {
                 ]}
                 options={[
                   {
+                    value: 'sejonggwan',
+                    label: 'E8 - Sejong Hall',
+                  },
+                  {
+                    value: 'jihyegwan',
+                    label: 'N21 - Jihye Hall',
+                  },
+                  {
+                    value: 'silloegwan',
+                    label: 'N20 - Silloe Hall',
+                  },
+                  {
                     value: 'areumgwan',
                     label: 'N19 - Areum Hall',
+                  },
+                  {
+                    value: 'jilligwan',
+                    label: 'N18 - Jilli Hall',
+                  },
+                  {
+                    value: 'seongsilgwan',
+                    label: 'N17 - Seongsil Hall',
                   },
                   {
                     value: 'somanggwan',
@@ -138,12 +158,36 @@ const BaseView: React.FC = () => {
                     label: 'N14 - Sarang Hall',
                   },
                   {
+                    value: 'mirgwan',
+                    label: 'W6 - Mir Hall',
+                  },
+                  {
+                    value: 'naraegwan',
+                    label: 'W6 - Narae Hall',
+                  },
+                  {
+                    value: 'yejigwan',
+                    label: 'W5 - Yeji Hall',
+                  },
+                  {
                     value: 'heemanggwan',
-                    label: 'W4-4 Heemang Hall',
+                    label: 'W4-4 - Heemang Hall',
+                  },
+                  {
+                    value: 'dasomgwan',
+                    label: 'W4-3 - Dasom Hall',
+                  },
+                  {
+                    value: 'nadlgwan',
+                    label: 'W4-2 - Nadl Hall',
+                  },
+                  {
+                    value: 'yeoulgwan',
+                    label: 'W4-1 - Yeoul Hall',
                   },
                   {
                     value: 'outside',
-                    label: 'Outside',
+                    label: 'Outside of Main Campus',
                   },
                 ]}
               />

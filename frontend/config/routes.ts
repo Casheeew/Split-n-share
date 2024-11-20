@@ -176,12 +176,18 @@ export default [
     routes: [
       {
         path: '/account',
-        redirect: '/account/center',
+        redirect: '/account/center/:userId',
       },
       {
         name: 'center',
         icon: 'smile',
         path: '/account/center',
+        component: './account/center',
+      },
+      {
+        name: 'center',
+        icon: 'smile',
+        path: '/account/center/:userId',
         component: './account/center',
       },
       {

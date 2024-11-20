@@ -1,37 +1,28 @@
-import { LikeTwoTone, MessageFilled } from '@ant-design/icons';
-import { List, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { LikeFilled, LikeOutlined, LikeTwoTone } from '@ant-design/icons';
+import { Button, List, Space, Tooltip } from 'antd';
+import React, { useState } from 'react';
 import type { ListItemDataType } from '../../data';
 import ReviewListContent from '../ReviewListContent';
 import useStyles from './index.style';
-import { queryUser } from '../../service';
 
 export type ReviewsProps = {
-  data: ListItemDataType[],
-  tab: 'given' | 'received',
+  data: ListItemDataType[];
+  tab: 'given' | 'received';
+  targetUsers: API.CurrentUser[];
 }
 
-type Review = {
-  author: string;
-  target: string;
-  text: string;
-  created_at: Date;
-  targetUser: {
-    status: string;
-    data: API.CurrentUser;
-  };
-}
-
-const Articles: React.FC<ReviewsProps> = ({ data: listData, tab }) => {
+const Articles: React.FC<ReviewsProps> = ({ data: listData, tab, targetUsers }) => {
+  const [like, setLike] = useState(false);
   const { styles } = useStyles();
 
   const IconText: React.FC<{
     icon: React.ReactNode;
     text: React.ReactNode;
-  }> = ({ icon, text }) => (
-    <span>
-      {icon} {text}
-    </span>
+    onClick: any;
+  }> = ({ icon, text, onClick }) => (
+    <Space onClick={onClick}>
+      {icon} {`${text} likes`}
+    </Space>
   );
 
   return (
@@ -52,15 +43,35 @@ const Articles: React.FC<ReviewsProps> = ({ data: listData, tab }) => {
         //   });
         // });
 
+        const targetUser = targetUsers.find((user) => tab === 'received' ? item.author === user._id : item.target === user._id)
+
+        const likeButton = (<Tooltip title="like" >
+          <Button size='small' shape="circle" icon={<LikeOutlined />} />
+        </Tooltip >)
+
+        const cancelLikeButton = (<Tooltip title="liked" >
+          <Button size='small' shape="circle" icon={<LikeFilled />} />
+        </Tooltip >)
+
         return (
           <List.Item
             key={`${item.author}-${item.created_at}-${tab}`}
             actions={[
-              <IconText key="like" icon={<LikeTwoTone />} text={item.like} />,
-              <IconText key="message" icon={<MessageFilled />} text={item.message} />,
+              <div
+                style={{
+                  display: 'flex',
+                  height: 26,
+                }}
+                key="likeDiv"
+              >
+                <IconText onClick={() => {
+                  setLike((value) => !value);
+                }} key="like" icon={like ? likeButton : cancelLikeButton} text={item.likes} />
+              </div>,
+              // <IconText key="message" icon={<MessageFilled />} text={item.message} />,
             ]}
           >
-            <List.Item.Meta
+            {/* <List.Item.Meta
               title={
                 <a className={styles.listItemMetaTitle} href={item.href}>
                   {item.title}
@@ -68,13 +79,13 @@ const Articles: React.FC<ReviewsProps> = ({ data: listData, tab }) => {
               }
               description={
                 <span>
-                  {/* todo! add tag logic */}
                   <Tag>Food & Drinks</Tag>
                   <Tag>Areum-gwan</Tag>
                 </span>
               }
-            />
-            <ReviewListContent key={`${item.author}-${item.created_at}-${tab}`} data={item} targetUser={item.targetUser} />
+            /> */}
+
+            {targetUser && <ReviewListContent key={`${item.author}-${item.created_at}-${tab}`} data={item} targetUser={targetUser} />}
           </List.Item>
         )
       }}

@@ -12,7 +12,7 @@ export interface IReview extends Document {
 const reviewSchema: Schema = new Schema({
   author: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   target: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  rating: { type: Number, required: true},
+  rating: { type: Number, required: true },
   text: { type: String, required: true, maxlength: 5000 },
   created_at: { type: Date, default: Date.now },
   likes: { type: Number, default: 0 }

@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, DatePicker, Divider, Form, Image, Input, InputNumber, Modal, Upload } from 'antd';
+import { Button, DatePicker, Divider, Form, Image, Input, InputNumber, Modal, Select, Tooltip, Upload } from 'antd';
 import type { UploadFile, UploadProps, GetProp, GetProps } from 'antd';
 import { useState } from 'react';
 import type { FC } from 'react';
@@ -94,9 +94,11 @@ const CreatePostingModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel
         >
             <Divider />
             <Form form={form} {...formItemLayout} layout="horizontal" name="createPostingForm">
-                <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter the title of the product.' }]}>
-                    <Input placeholder='The title of the posting. (should contain brand name, amount and quantity)' />
-                </Form.Item>
+                <Tooltip title="Your title should contain the brand name, amount and quantity of the purchase.">
+                    <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Please enter the title of the product.' }]}>
+                        <Input placeholder='The title of the posting. (should contain brand name, amount and quantity)' />
+                    </Form.Item>
+                </Tooltip>
                 {/* todo! image upload logic */}
                 <Form.Item name="image" label="Image" valuePropName="fileList" getValueFromEvent={normFile}>
                     <Upload
@@ -126,15 +128,28 @@ const CreatePostingModalForm: FC<ModalProps> = ({ open, onOk: handleOk, onCancel
                         showTime
                     />
                 </Form.Item>
+                <Form.Item name="category" label="Category">
+                    <Select placeholder='Select a category.'>
+                        <Select.Option value="food_drink">Food & Drinks</Select.Option>
+                        <Select.Option value="health_beauty">Health & Beauty</Select.Option>
+                        <Select.Option value="electronics">Electronics</Select.Option>
+                        <Select.Option value="home_kitchen">Home & Kitchen</Select.Option>
+                        <Select.Option value="outdoors">Outdoors</Select.Option>
+                    </Select>
+                </Form.Item>
                 <Form.Item name="price" label="Price" rules={[{ required: true, message: 'Please enter the price of the product.' }]}>
                     <InputNumber style={{ width: '100%' }} placeholder='The price of the product (in KRW).' />
                 </Form.Item>
-                <Form.Item name="desc" label="Product Description" rules={[{ required: true, message: 'Please enter the description of the product.' }]}>
-                    <Input.TextArea placeholder='Details about the product.' />
-                </Form.Item>
-                <Form.Item name="joint_purchase_information" label="Joint-Purchase Information" rules={[{ required: true, message: 'Please enter the joint-purchase information of the product.' }]}>
-                    <Input.TextArea placeholder='What other co-buyers may need to know when joining your joint-purchase deal.' />
-                </Form.Item>
+                <Tooltip title="Detailed description about the purchase you want to share, such as brand and place of origin.">
+                    <Form.Item name="desc" label="Product Description" rules={[{ required: true, message: 'Please enter the description of the product.' }]}>
+                        <Input.TextArea placeholder='Details about the product.' />
+                    </Form.Item>
+                </Tooltip>
+                <Tooltip title="Useful information when joining your joint-purchase deal, such as the link to the purchase, the method of delivery and collecting payments.">
+                    <Form.Item name="joint_purchase_information" label="Joint-Purchase Information" rules={[{ required: true, message: 'Please enter the joint-purchase information of the product.' }]}>
+                        <Input.TextArea placeholder='What other co-buyers may need to know when joining your joint-purchase deal.' />
+                    </Form.Item>
+                </Tooltip>
             </Form>
         </Modal>
     )

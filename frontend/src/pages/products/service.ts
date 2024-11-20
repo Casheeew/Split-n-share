@@ -22,3 +22,9 @@ export async function queryUser(params: UserParams, options?: { [key: string]: a
         ...(options || {}),
     });
 }
+
+export async function requestToJoinDeal(productId: string): Promise<{ status: string }> {
+    return request(`/api/products/${productId}/join`, {
+        method: 'POST',
+    });
+}
