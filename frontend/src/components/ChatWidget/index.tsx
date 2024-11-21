@@ -127,7 +127,7 @@ const Widget: React.FC = () => {
                                                         avatar={<Avatar src={targetUser.profile_picture} size="small" />}
                                                         title={
                                                             <>
-                                                                {`${targetUser.first_name} ${targetUser.last_name}`} &nbsp;<small>{dayjs(item.updatedAt).format('MM/DD HH:mm')}</small>
+                                                                {`Trang Nguyen`} &nbsp;<small>{dayjs(item.updatedAt).format('MM/DD HH:mm')}</small>
                                                             </>
                                                         }
                                                         description={item.messages[item.messages.length - 1]?.text || <small>This is the start of a legendary conversation.</small>}
@@ -141,7 +141,7 @@ const Widget: React.FC = () => {
                             </div>
                         </Col>
                         <Col span={16}>
-                            <Card title="Jane Doe" style={{ width: '100%', height: '91.8%', boxSizing: 'border-box', borderRadius: '0' }} bodyStyle={{ padding: '5px' }}>
+                            <Card title="Trang Nguyen" style={{ width: '100%', height: '91.8%', boxSizing: 'border-box', borderRadius: '0' }} bodyStyle={{ padding: '5px' }}>
                                 <div style={{
                                     height: '100%', width: '100%', overflow: 'auto',
                                 }}>
