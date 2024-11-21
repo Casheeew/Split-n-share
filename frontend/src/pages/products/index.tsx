@@ -19,6 +19,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { CommentOutlined } from '@ant-design/icons';
 import { ChatContext } from '@/ChatContext';
 
+import jwt from 'jsonwebtoken';
+
 const { Title, Paragraph, Text } = Typography;
 
 const Product: React.FC = () => {
@@ -28,6 +30,10 @@ const Product: React.FC = () => {
 
 	const { initialState } = useModel('@@initialState');
 	const { currentUser } = initialState || {};
+
+	const token = localStorage.getItem('token')?.split(' ')[1];
+    const decoded = token ? (jwt.decode(token) as any) : { id: undefined };
+    const currentUserId = decoded.id;
 
 	const { data: productData, loading: productLoading } = useRequest(() =>
 		queryProducts({ productId })
@@ -60,7 +66,7 @@ const Product: React.FC = () => {
 		createChatForTwo({
 			targetId: creator?._id,
 		});
-		setChatOpen(true);		
+		setChatOpen(true);
 	}
 
 	const handleRequestToJoin = async () => {
@@ -166,23 +172,37 @@ const Product: React.FC = () => {
 							<Paragraph>{product.joint_purchase_information || 'No details available.'}</Paragraph>
 						</Typography>
 
-						{
-							requestStatus
-								? <Button
-									type="default"
-									style={{ marginTop: 20 }}
-									onClick={() => setIsModalOpen(true)}
-								>
-									{requestStatus ? 'Cancel Request' : 'Request to Join Deal'}
-								</Button>
-								: <Button
+						{creator && (
+							currentUserId === product.creator ? (
+								<Button
 									type="primary"
 									style={{ marginTop: 20 }}
-									onClick={() => setIsModalOpen(true)}
+									onClick={() => {
+										message.info('Group Chat opened.');
+									}}
 								>
-									{requestStatus ? 'Cancel Request' : 'Request to Join Deal'}
+									Open Group Chat
 								</Button>
-						}
+							) : (
+								requestStatus ? (
+									<Button
+										type="default"
+										style={{ marginTop: 20 }}
+										onClick={() => setIsModalOpen(true)}
+									>
+										Cancel Request
+									</Button>
+								) : (
+									<Button
+										type="primary"
+										style={{ marginTop: 20 }}
+										onClick={() => setIsModalOpen(true)}
+									>
+										Request to Join Deal
+									</Button>
+								)
+							)
+						)}
 
 						<Typography>
 							<Title level={4} style={{ marginTop: '20px' }}>
