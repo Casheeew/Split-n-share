@@ -29,7 +29,7 @@ app.use(
       useDefaults: true, // Use Helmet's default directives for other resources
       directives: {
         // Allow all image sources
-        'img-src': ["'self'", "*"],
+        'img-src': ["'self'", 'https:', 'data:', 'blob:', '*'],
       },
     })
   );
