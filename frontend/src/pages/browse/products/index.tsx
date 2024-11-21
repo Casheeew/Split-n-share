@@ -78,7 +78,7 @@ const ProductGrid: FC = () => {
         xl: 4,
         xxl: 4,
       }}
-      dataSource={list}
+      dataSource={list.reverse()}
       renderItem={(item) => (
         <List.Item>
           <Link to={`/products/${item._id}`}>
