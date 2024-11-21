@@ -28,7 +28,8 @@ app.use(
     helmet.contentSecurityPolicy({
       useDefaults: true, // Use Helmet's default directives for other resources
       directives: {
-        'img-src': ['*'], // Allow all image sources
+        // Allow all image sources
+        'img-src': ["'self'", "*"],
       },
     })
   );
