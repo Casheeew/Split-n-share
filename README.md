@@ -1,7 +1,7 @@
 # Split-n-share
 ## Your solution to group-buying.
 
-Many online shopping platforms offer bulk discounts or sell items exclusively in large quantities, making it difficult for individuals to save money without facing logistical and financial challenges. To address this, Split-n’-Share enables KAIST students to share the cost and quantity of bulk purchases collaboratively, simplifying access to discounts while avoiding the hassle of managing excess.
+Many online shopping platforms offer bulk discounts or sell items exclusively in large quantities, making it difficult for individuals to save money without facing logistical and financial challenges. To address this, Split-n’-Share enables KAIST students to share the cost and quantity of bulk purchases collaboratively, simplifying access to discounts while avoiding the hassle of managing excess quantity.
 
 Split-n’-Share allows KAIST students to 
 
