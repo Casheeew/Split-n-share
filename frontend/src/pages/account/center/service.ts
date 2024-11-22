@@ -1,6 +1,7 @@
 import { request } from '@umijs/max';
 import type { ListItemDataType, ReviewData, UserParams } from './data.d';
 import jwt from 'jsonwebtoken';
+import { IProduct } from './components/Projects';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function queryCurrentUser(options?: { [key: string]: any }) {
@@ -42,6 +43,17 @@ export async function queryProducts(
   }
 }> {
   return request(`/api/products`, {
+    params,
+  });
+}
+
+export async function queryUserProducts(
+  userId: string,
+  params?: any,
+): Promise<{
+  data: IProduct[];
+}> {
+  return request(`/api/products/user/${userId}`, {
     params,
   });
 }

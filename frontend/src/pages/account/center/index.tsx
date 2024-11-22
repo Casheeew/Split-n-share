@@ -8,7 +8,7 @@ import Articles from './components/Articles';
 import Projects from './components/Projects';
 import Cobuyers from './components/Cobuyers';
 import type { CurrentUser, tabKeyType } from './data.d';
-import { queryCurrentUser, queryUser, queryReviews, createReview as apiCreateReview, queryProducts } from './service';
+import { queryCurrentUser, queryUser, queryReviews, createReview as apiCreateReview, queryProducts, queryUserProducts } from './service';
 import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 
@@ -271,12 +271,13 @@ const Center: React.FC = () => {
   //  获取用户信息
   const { data: productsData, loading: productsLoading } = useRequest(() => {
     if (userId === undefined) {
-      return queryProducts({ creator: currentUserId });;
+      return queryUserProducts(currentUserId);
     }
-    return queryProducts({ creator: userId });
+    return queryUserProducts(userId);
   }, { refreshDeps: [userId]});
+  console.log(productsData);
 
-  const products = productsData?.data;
+  const products = productsData;
 
   useEffect(() => {
     runReceived();
@@ -346,7 +347,7 @@ const Center: React.FC = () => {
     if (tabValue === 'postings') {
       // todo!
       // return <Projects data={data} />;
-      return <Projects data={products} loading={productsLoading} />;
+      return <Projects data={products || []} loading={productsLoading} />;
     }
 
     if (tabValue === 'given_reviews') {

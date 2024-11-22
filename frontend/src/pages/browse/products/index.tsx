@@ -1,4 +1,4 @@
-import { Link, useIntl, useModel, useRequest } from '@umijs/max';
+import { Link, useIntl, useModel, useRequest, useSearchParams } from '@umijs/max';
 import { Card, Col, Form, List, Row, Select, Typography, Button, message, GetProp, UploadProps } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -6,7 +6,7 @@ import { useState, type FC } from 'react';
 import AvatarList from './components/AvatarList';
 import StandardFormRow from './components/StandardFormRow';
 import type { IProduct } from './data';
-import { queryProducts, createProductPosting as apiCreateProductPosting } from './service';
+import { queryProducts, createProductPosting as apiCreateProductPosting, querySearchProducts } from './service';
 import useStyles from './style.style';
 // import { DefaultOptionType } from 'antd/es/select';
 import CreatePostingModalForm from './components/ModalForm';
@@ -29,20 +29,27 @@ export type StoreValue = any;
 export type Store = Record<string, StoreValue>;
 
 const ProductGrid: FC = () => {
-
-
   const { initialState } = useModel('@@initialState');
   const { currentUser } = initialState || {};
   const [modalOpen, setModalOpen] = useState(false);
   const [filterOptions, setFilterOptions] = useState<any>({});
 
+  const [searchParams] = useSearchParams();
+  const searchKey = searchParams?.get('key');
+
   const { styles } = useStyles();
   const { data, loading, refresh, run } = useRequest((values: any) => {
-    // todo! filter
-    console.log('form data', values);
-    return queryProducts({
-      count: 8,
-    });
+    if (!searchKey) {
+      return queryProducts({
+        count: 8,
+      });
+    }
+
+    return querySearchProducts({
+      keyword: searchKey,
+    })
+  }, {
+    refreshDeps: [searchParams],
   });
 
   const filter = (data: any, options: any) => {
@@ -52,7 +59,6 @@ const ProductGrid: FC = () => {
     if (options.dorm === 'all') {
       delete options.dorm;
     }
-    console.log(options);
 
     return data.filter((product: any) => {
       return !options.category || (product.category === options.category)

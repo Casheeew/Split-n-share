@@ -10,8 +10,8 @@ import { useModel, useRequest } from '@umijs/max';
 import dayjs from 'dayjs';
 
 // Replace with backend's URL
-// const socket = io('http://localhost:3080');
-const socket = io('https://split-n-share-olxp.onrender.com/');
+const socket = io('http://localhost:3080');
+// const socket = io('https://split-n-share-olxp.onrender.com/');
 
 socket.on('message-update', (data) => {
     console.log('DB change detected: ', data);
