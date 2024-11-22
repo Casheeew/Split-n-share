@@ -1,6 +1,22 @@
 # Split-n-share
 ## Your solution to group-buying.
----
+
+Many online shopping platforms offer bulk discounts or sell items exclusively in large quantities, making it difficult for individuals to save money without facing logistical and financial challenges. To address this, Split-n’-Share enables KAIST students to share the cost and quantity of bulk purchases collaboratively, simplifying access to discounts while avoiding the hassle of managing excess.
+
+Split-n’-Share allows KAIST students to 
+
+- Discover ongoing group-buying opportunities.
+
+- Create or join group purchases to benefit from bulk discounts.
+
+- Communicate with other participants to coordinate purchases and delivery.
+
+- Manage and keep track deals and cobuyers
+
+## Code Overview
+
+- **Backend (`backend/`)**: Implements the server-side functionality to handle user authentication, group management, and data storage.
+- **Frontend (`frontend/`)**: Handles the user interface for interacting with the platform, allowing users to join groups, track orders, and communicate.
 
 ## Setup
 
