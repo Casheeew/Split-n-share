@@ -158,8 +158,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  baseURL: 'http://localhost:3080/',
-  // baseURL: 'https://split-n-share-olxp.onrender.com/',
+  // baseURL: 'http://localhost:3080/',
+  baseURL: 'https://split-n-share-olxp.onrender.com/',
   ...errorConfig,
   requestInterceptors: [
     function (config: any) {
