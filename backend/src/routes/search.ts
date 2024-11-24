@@ -17,7 +17,10 @@ router.get('/products', async (req: Request, res: Response) => {
     );
 
     // Send the results
-    res.status(200).json(products);
+    res.status(200).json({ data: { 
+      status: 'success',
+      data: products 
+    } });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Internal Server Error' });

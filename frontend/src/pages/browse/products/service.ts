@@ -9,6 +9,14 @@ export async function queryProducts(
   });
 }
 
+export async function querySearchProducts(
+  params: any,
+): Promise<ProductQueryResponse> {
+  return request('/api/search/products', {
+    params,
+  });
+}
+
 export async function createProductPosting(body: PostingData, options?: { [key: string]: any }) {
   return request<{ data: any }>('/api/products', {
     method: 'POST',

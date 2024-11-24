@@ -60,7 +60,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     actionsRender: () => [
       <Search style={{ width: "55vw", margin: '24px' }} key="Input" onSearch={(value) => {
-        console.log(value);
+        if (value === '') { history.push(`/browse/products`); }
+        else { history.push(`/browse/products?key=${value}`); }
         // todo! search
         // todo! change icon
       }} placeholder="Search for anything on Split-n'-share!" />,
@@ -157,8 +158,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  * @doc https://umijs.org/docs/max/request#配置
  */
 export const request: RequestConfig = {
-  // baseURL: 'http://localhost:3080',
-  baseURL: 'https://split-n-share-olxp.onrender.com/',
+  baseURL: 'http://localhost:3080/',
+  // baseURL: 'https://split-n-share-olxp.onrender.com/',
   ...errorConfig,
   requestInterceptors: [
     function (config: any) {
