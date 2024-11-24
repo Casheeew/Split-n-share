@@ -58,11 +58,36 @@ async function main() {
     },);
 
     io.on('connection', (socket) => {
-
-
         console.log('a user connected!');
-        socket.on('send message', (chat) => {
-            io.emit('send message', chat);
+        socket.on('send message', async (messageObj) => {
+            console.log(messageObj);
+
+            const { chatId, senderId, text } = messageObj;
+            const timestamp = new Date(Date.now());
+
+            const groupChat = await GroupChat.findById(chatId);
+            if (groupChat === null) {
+                io.emit('chat error', { status: 'error', message: 'There is a problem' });
+                return;
+            }
+
+            // Check if the user is a member of the group chat
+            //   if (!groupChat.members.some((member) => member.toString() === userId.toString())) {
+            //     return res.status(403).json({ error: "You are not a member of this group chat" });
+            //   }
+            //   console.log(groupChat.members);
+            //   console.log(userId);
+            // Add the message to the group's messages
+            groupChat.messages.push({ senderId, text, timestamp });
+
+            await groupChat.save();
+
+            await groupChat.populate({
+                path: "messages.senderId",
+                select: "first_name last_name",
+            });
+
+            io.emit('chat message');
         })
     });
 
@@ -75,6 +100,7 @@ async function main() {
     // User.collection.deleteMany();
     // Product.collection.deleteMany();
     // Review.collection.deleteMany();
+    // GroupChat.collection.deleteMany();
 
     // Start the server
     const port = process.env.PORT;

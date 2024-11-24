@@ -11,6 +11,7 @@ Install `node_modules`:
 ```bash
 pnpm install
 ```
+**Note that `npm install` may not work as intended. Please install using `pnpm`.**
 
 ## Scripts
 
@@ -43,7 +44,3 @@ npm run lint:fix
 ```bash
 npm test
 ```
-
-## More
-
-Used template from https://pro.ant.design.

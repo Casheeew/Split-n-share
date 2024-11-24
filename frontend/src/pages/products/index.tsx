@@ -62,8 +62,8 @@ const Product: React.FC = () => {
 	const [loading, setLoading] = useState(false);
 	const [requestStatus, setRequestStatus] = useState(false);
 
-	const onChatButtonClick = () => {
-		createChatForTwo({
+	const onChatButtonClick = async () => {
+		await createChatForTwo({
 			targetId: creator?._id,
 		});
 		setChatOpen(true);
