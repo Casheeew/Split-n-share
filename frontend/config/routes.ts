@@ -79,6 +79,19 @@ export default [
     ],
   },
   {
+    path: '/postings',
+    hideInMenu: true,
+    name: 'postings',
+    routes: [
+      {
+        name: 'postings',
+        hideInMenu: true,
+        path: '/postings',
+        component: './postings',
+      },
+    ],
+  },
+  {
     path: '/browse',
     hideInMenu: true,
     icon: 'table',

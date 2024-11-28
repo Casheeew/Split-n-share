@@ -8,7 +8,7 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 import { Input } from 'antd';
-import { Notification } from './components/RightContent';
+import { Notification, Postings } from './components/RightContent';
 import ChatWidget from './components/ChatWidget';
 
 import "./app.css";
@@ -66,7 +66,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         // todo! change icon
       }} placeholder="Search for anything on Split-n'-share!" />,
       <SelectLang key="SelectLang" />,
-      <Question key="help" />,
+      <Postings key="postings" />,
       <Notification key="notification" />,
     ],
     avatarProps: {
