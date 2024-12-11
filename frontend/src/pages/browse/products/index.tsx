@@ -113,7 +113,7 @@ const ProductGrid: FC = () => {
                         rows: 2,
                       }}
                     >
-                      {item.joint_purchase_information}
+                      {item.desc}
                     </Paragraph>
                   </>
                 }
