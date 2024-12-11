@@ -63,7 +63,7 @@ const ProductGrid: FC = () => {
     return data.filter((product: any) => {
       return !options.category || (product.category === options.category)
     }).filter((product: any) => {
-      return !options.dorm || (product.dorm === options.dorm)
+      return !options.dorm || (product.pick_up_location === options.dorm)
     });
   }
 
