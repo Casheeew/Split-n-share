@@ -1,12 +1,12 @@
 import { Link, useIntl, useModel, useRequest, useSearchParams } from '@umijs/max';
-import { Card, Col, Form, List, Row, Select, Typography, Button, message, GetProp, UploadProps } from 'antd';
+import { Card, Col, Form, List, Row, Select, Typography, Button, message, GetProp, UploadProps, Affix } from 'antd';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { useState, type FC } from 'react';
 import AvatarList from './components/AvatarList';
 import StandardFormRow from './components/StandardFormRow';
 import type { IProduct } from './data';
-import { queryProducts, createProductPosting as apiCreateProductPosting, querySearchProducts } from './service';
+import { queryProducts, createProductPosting as apiCreateProductPosting, querySearchProducts, createProductChat } from './service';
 import useStyles from './style.style';
 // import { DefaultOptionType } from 'antd/es/select';
 import CreatePostingModalForm from './components/ModalForm';
@@ -188,7 +188,10 @@ const ProductGrid: FC = () => {
       ));
     console.log(values.image);
     values.creator = currentUser?._id;
-    await createProductPosting(values);
+    const product = (await createProductPosting(values)).data;
+		await createProductChat({
+			productId: product._id,
+		});
   }
 
   const showModal = () => {
@@ -218,7 +221,9 @@ const ProductGrid: FC = () => {
         <Col span={1}>
         </Col>
         <Col span={4}>
-          <FilterMenu onClick={handleFilterMenuClick} />
+          <Affix offsetTop={24}>
+            <FilterMenu onClick={handleFilterMenuClick} />
+          </Affix>
         </Col>
         <Col span={18}>
           <div className={styles.coverCardList}>

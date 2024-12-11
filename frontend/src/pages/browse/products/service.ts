@@ -27,3 +27,11 @@ export async function createProductPosting(body: PostingData, options?: { [key: 
     ...(options || {}),
   });
 }
+
+export async function createProductChat(body: any, options?: any): Promise<any> {
+  return request(`/api/groupchats`, {
+      method: 'POST',
+      data: body,
+      ...(options || {}),
+  });
+}

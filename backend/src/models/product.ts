@@ -8,14 +8,8 @@ export interface IProduct extends Document {
   image: string[];
   quantity: number;
   end: Date;
-  cobuyers: {
-    user: mongoose.Types.ObjectId;
-    quantity: number;
-  }[];
-  cobuyers_queue: {
-    user: mongoose.Types.ObjectId;
-    quantity: number;
-  }[];
+  cobuyers: mongoose.Types.ObjectId[];
+  cobuyers_queue: mongoose.Types.ObjectId[];
   creator: mongoose.Types.ObjectId;
   price: number;
   price_old: number;
@@ -40,18 +34,8 @@ const productSchema: Schema = new Schema({
   },
   quantity: { type: Number, default: 1, min: 1 },
   end: { type: Date, required: true },
-  cobuyers: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-      quantity: { type: Number, required: true, min: 1 }
-    }
-  ],
-  cobuyers_queue: [
-    {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-      quantity: { type: Number, required: true, min: 1 }
-    }
-  ],
+  cobuyers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
+  cobuyers_queue: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }],
   creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   price: { type: Number, required: true, min: 0 },
   price_old: { type: Number, reqired: true, min: 0 },

@@ -1,6 +1,7 @@
-import { QuestionCircleOutlined, BellOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { SelectLang as UmiSelectLang } from '@umijs/max';
+import { QuestionCircleOutlined, BellOutlined, InfoCircleOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { history, SelectLang as UmiSelectLang } from '@umijs/max';
 import HeaderDropdown from '../HeaderDropdown';
+import { Tooltip } from 'antd';
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -8,7 +9,15 @@ export const SelectLang = () => {
   return <UmiSelectLang />;
 };
 
-
+export const Postings = () => {
+  return (
+    <Tooltip title="My Postings">
+      <AppstoreOutlined onClick={() => {
+        history.push(`/postings`);
+      }} />
+    </Tooltip>
+  );
+}
 
 export const Notification = () => {
   // todo! open notifications
