@@ -39,7 +39,7 @@ app.use(express.static(path.join('../frontend', 'dist')));
 // Limit request from the same API 
 const limiter = rateLimit({
     max: 10000,
-    windowMs: 60 * 1000,
+    windowMs: 10 * 1000,
     message: 'Too Many Request from this IP, please try again in an hour'
 });
 app.use('/api', limiter);
