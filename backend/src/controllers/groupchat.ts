@@ -91,7 +91,7 @@ export const createTwoPersonChat = async (req: Request, res: Response, next: Nex
             members: { $all: [creatorId, targetId] }, // Ensure both users are in the same chat
         });
 
-        if (existingChat) {
+        if (existingChat && !existingChat.productId) {
             return res.status(200).json({
                 status: "success",
                 message: "Chat already exists",
