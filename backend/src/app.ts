@@ -38,15 +38,15 @@ app.use(express.static(path.join('../frontend', 'dist')));
 
 // Limit request from the same API 
 const limiter = rateLimit({
-    max: 3000,
-    windowMs: 60 * 60 * 1000,
+    max: 10000,
+    windowMs: 10 * 1000,
     message: 'Too Many Request from this IP, please try again in an hour'
 });
 app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({
-    limit: '15mb'
+    limit: '500mb'
 }));
 
 // Data sanitization against Nosql query injection
