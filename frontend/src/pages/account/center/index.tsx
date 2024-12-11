@@ -351,13 +351,9 @@ const Center: React.FC = () => {
     }
 
     if (tabValue === 'given_reviews') {
-      console.log('Given  -----');
-      console.log(givenReviews);
       return <Articles key="given_reviews" tab="given" data={givenReviews?.data || []} targetUsers={givenReviewTargets?.data || []} />;
     }
     if (tabValue === 'received_reviews') {
-      console.log('Received  -----');
-      console.log(receivedReviews);
       return <Articles key="received_reviews" tab="received" data={receivedReviews?.data || []} targetUsers={receivedReviewAuthors?.data || []} />;
     }
     return null;

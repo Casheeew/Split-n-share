@@ -29,6 +29,12 @@ export async function requestToJoinDeal(productId: string): Promise<{ status: st
     });
 }
 
+export async function requestToUnjoinDeal(productId: string): Promise<{ status: string }> {
+    return request(`/api/products/${productId}/unjoin`, {
+        method: 'POST',
+    });
+}
+
 export async function createChatForTwo(body: any, options?: any): Promise<any> {
     return request(`/api/groupchats/two`, {
         method: 'POST',

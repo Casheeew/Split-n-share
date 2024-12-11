@@ -29,8 +29,7 @@ const FilterMenu: React.FC<FilterMenuProps> = ({onClick}) => {
   return (
     <Menu
       onClick={onClick}
-      defaultSelectedKeys={['1']}
-      defaultOpenKeys={['sub1']}
+      defaultSelectedKeys={['all']}
       mode="inline"
       items={items}
     />

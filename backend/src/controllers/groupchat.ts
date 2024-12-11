@@ -14,16 +14,17 @@ export const getAllGroupChats = async (req: Request, res: Response, next: NextFu
         const groupChats = await GroupChat.find({
             members: { $in: [userId] }, // Check if the user is in the members array
         })
-            .sort({ 'messages.timestamp': -1 }) // Sort by the latest message timestamp
-            .populate({
-                path: 'members',
-                select: 'first_name last_name profile_picture', // Optional: Populate member details
-            })
-            .populate({
-                path: 'messages.senderId',
-                select: 'first_name last_name profile_picture', // Optional: Populate sender details for latest message
-            });
-
+        .sort({ 'messages.timestamp': -1 }) // Sort by the latest message timestamp
+        .populate({
+            path: 'members',
+            select: 'first_name last_name profile_picture', // Optional: Populate member details
+        })
+        .populate('productId')
+        .populate({
+            path: 'messages.senderId',
+            select: 'first_name last_name profile_picture', // Optional: Populate sender details for latest message
+        });
+        
         res.status(200).json({
             status: 'success',
             results: groupChats.length,
@@ -154,7 +155,7 @@ export const addMemberToGroupChat = async (req: Request, res: Response, next: Ne
         }
 
         // Check if the user is a valid co-buyer
-        if (!product.cobuyers.some((cobuyer) => cobuyer.user.toString() === userId)) {
+        if (!product.cobuyers.some((cobuyer) => cobuyer.toString() === userId)) {
             return res.status(403).json({ error: "User is not a co-buyer of the product" });
         }
 

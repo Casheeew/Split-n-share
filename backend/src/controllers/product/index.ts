@@ -4,6 +4,8 @@ import type { ListItem } from './types';
 import { getAll, getOne, updateOne, deleteOne, createOne } from '../base';
 import Product from '../../models/product';
 import AppError from '../../utils/appError';
+import User from '../../models/user';
+import GroupChat from '../../models/groupchat';
 
 const titles = [
   'Shin Ramen, 120g, 32 packs',
@@ -25,7 +27,7 @@ const avatars = [
   'https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png', // React
   'https://gw.alipayobjects.com/zos/rmsportal/ComBAopevLwENQdKWiIn.png', // Vue
   'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png', // Webpack
-  ];
+];
 
 const covers = [
   'https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png',
@@ -123,28 +125,28 @@ const router = express.Router();
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => getAll(Product, req, res, next);
 export const getProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-      const isList = req.params.id.startsWith('[') && req.params.id.endsWith(']');
-      const doc = isList? await Product.find({_id: req.params.id.slice(1, -1).split(',')}) : await Product.findById(req.params.id);
+    const isList = req.params.id.startsWith('[') && req.params.id.endsWith(']');
+    const doc = isList ? await Product.find({ _id: req.params.id.slice(1, -1).split(',') }) : await Product.findById(req.params.id);
 
-      if (!doc) {
-          return next(new AppError(404, 'fail', 'No document found with that id'));
-      }
+    if (!doc) {
+      return next(new AppError(404, 'fail', 'No document found with that id'));
+    }
 
-      console.log({
-          data: {
-              status: 'success',
-              data: doc,
-          },
-      })
+    console.log({
+      data: {
+        status: 'success',
+        data: doc,
+      },
+    })
 
-      res.status(200).json({
-          data: {
-              status: 'success',
-              data: doc,
-          },
-      });
+    res.status(200).json({
+      data: {
+        status: 'success',
+        data: doc,
+      },
+    });
   } catch (error) {
-      next(error);
+    next(error);
   }
 }
 
@@ -153,28 +155,120 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => deleteOne(Product, req, res, next);
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => createOne(Product, req, res, next);
 
+export const joinProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const productId = req.params.id;
+    const userId = res.locals.user._id; // Current user's ID from authentication middleware
+
+    // Validate target user 
+    const targetUser = await User.findById(userId);
+    if (!targetUser) {
+      return res.status(404).json({ message: 'Target user not found' });
+    }
+    
+    // Update given_reviews and received_reviews
+    const data = await Product.findByIdAndUpdate(productId, { $push: { cobuyers_queue: userId } });
+    
+    res.status(201).json({
+      status: 'success',
+      data, // Return the product data
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const unjoinProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const productId = req.params.id;
+    const userId = res.locals.user._id; // Current user's ID from authentication middleware
+
+    // Validate target user 
+    const targetUser = await User.findById(userId);
+    if (!targetUser) {
+      return res.status(404).json({ message: 'Target user not found' });
+    }
+    
+    // Update given_reviews and received_reviews
+    const data = await Product.findByIdAndUpdate(productId, { $pull: { cobuyers_queue: userId } });
+    
+    res.status(201).json({
+      status: 'success',
+      data, // Return the product data
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const declineJoinProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const productId = req.params.productId;
+    const userId = req.params.userId;
+
+    // Validate target user 
+    const targetUser = await User.findById(userId);
+    if (!targetUser) {
+      return res.status(404).json({ message: 'Target user not found' });
+    }
+    
+    // Update given_reviews and received_reviews
+    const data = await Product.findByIdAndUpdate(productId, { $pull: { cobuyers_queue: userId } });
+    
+    res.status(201).json({
+      status: 'success',
+      data, // Return the product data
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const approveJoinProduct = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const productId = req.params.productId;
+    const userId = req.params.userId;
+
+    // Update given_reviews and received_reviews
+    await Product.findByIdAndUpdate(productId, { $pull: { cobuyers_queue: userId } });
+    const product = await Product.findByIdAndUpdate(productId, { $push: { cobuyers: userId } });
+
+    const groupchat = await GroupChat.findOneAndUpdate({ productId }, { $push: { members: userId }});
+    // await groupchat
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        product,
+        groupchat,
+      }, // Return the product data
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 export const getUserProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-      const { userId } = req.params; // Extract userId from route parameter
+    const { userId } = req.params; // Extract userId from route parameter
 
-      // Validate if userId is provided
-      if (!userId) {
-          return res.status(400).json({
-              status: 'fail',
-              message: 'User ID is required',
-          });
-      }
-
-      // Fetch products created by the specified user
-      const userProducts = await Product.find({ creator: userId });
-
-      // Respond with the results
-      res.status(200).json({
-          status: 'success',
-          results: userProducts.length,
-          data: userProducts,
+    // Validate if userId is provided
+    if (!userId) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'User ID is required',
       });
+    }
+
+    // Fetch products created by the specified user
+    const userProducts = await Product.find({ creator: userId }).populate(['cobuyers', 'cobuyers_queue']);
+    // Respond with the results
+    res.status(200).json({
+      status: 'success',
+      results: userProducts.length,
+      data: userProducts,
+    });
   } catch (err) {
-      next(err); // Pass error to global error handler
+    next(err); // Pass error to global error handler
   }
 };

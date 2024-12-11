@@ -14,7 +14,7 @@ import {
 	message,
 	Skeleton,
 } from 'antd';
-import { createChatForTwo, queryProducts, queryUser, requestToJoinDeal } from './service';
+import { createChatForTwo, queryProducts, queryUser, requestToJoinDeal, requestToUnjoinDeal } from './service';
 import React, { useContext, useEffect, useState } from 'react';
 import { CommentOutlined } from '@ant-design/icons';
 import { ChatContext } from '@/ChatContext';
@@ -75,7 +75,7 @@ const Product: React.FC = () => {
 			if (productId === undefined) { throw new Error('productId is undefined') }
 			const response = await requestToJoinDeal(productId);
 			if (response.status === 'success') {
-				message.success('Request submitted successfully!');
+				message.success('Request sent successfully!');
 				setRequestStatus(true);
 			} else {
 				message.error('Failed to submit request. Please try again.');
@@ -92,10 +92,11 @@ const Product: React.FC = () => {
 		setLoading(true);
 		try {
 			if (productId === undefined) { throw new Error('productId is undefined') }
-			const response = await requestToJoinDeal(productId);
+			const response = await requestToUnjoinDeal(productId);
 			if (response.status === 'success') {
 				message.success('Request canceled successfully!');
 				setRequestStatus(false);
+			} else {
 				message.error('Failed to cancel request. Please try again.');
 			}
 		} catch (error) {
@@ -177,7 +178,9 @@ const Product: React.FC = () => {
 								<Button
 									type="primary"
 									style={{ marginTop: 20 }}
-									onClick={() => {
+									onClick={async () => {
+										console.log(product);
+										setChatOpen(true);
 										message.info('Group Chat opened.');
 									}}
 								>

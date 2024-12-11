@@ -10,6 +10,7 @@ import { useModel, useRequest } from '@umijs/max';
 import dayjs from 'dayjs';
 
 import './styles.css';
+import AvatarList from '@/pages/browse/products/components/AvatarList';
 
 // Replace with backend's URL
 // const socket = io('http://localhost:3080');
@@ -47,17 +48,18 @@ const Widget: React.FC = () => {
 
     const [selectedChatMessages, setSelectedChatMessages] = useState<any>([]);
 
-    const [targetUser, setTargetUser] = useState<any>(undefined);
+    const [targetName, setTargetName] = useState<any>(undefined);
 
     const [inputValue, setInputValue] = useState('');
 
     const { data: chatData, loading, run } = useRequest(() => queryChats(), {
         onSuccess: (data) => {
             // console.log(data);
+            const targetUser = data[0].members.find((member: any) => member._id !== currentUser?._id);
             if (data.length > 0) {
                 setSelectedChatId(data[0]._id);
                 setSelectedChatMessages(data[0].messages || []);
-                setTargetUser(data[0].members.find((member: any) => member._id !== currentUser?._id));
+                setTargetName(data[0].productId ? data[0].productId.title : `${targetUser.first_name} ${targetUser.last_name}`);
             }
         }
     });
@@ -107,11 +109,11 @@ const Widget: React.FC = () => {
         setInputValue('');
     }
 
-    const handleChatNavClick = (chatId: string, targetUser: any) =>
+    const handleChatNavClick = (chatId: string, name: any) =>
         () => {
             setSelectedChatId(chatId);
             setSelectedChatMessages(chatData?.find((chat: any) => chat._id === chatId)?.messages || []);
-            setTargetUser(targetUser);
+            setTargetName(name);
         }
 
     return !chatOpen
@@ -151,7 +153,7 @@ const Widget: React.FC = () => {
                                 }}
                             >
                                 <InfiniteScroll
-                                    dataLength={chatData.length}
+                                    dataLength={chatData?.length || 0}
                                     next={() => false}
                                     hasMore={false}
                                     loader={<Skeleton avatar paragraph={{ rows: 1 }} active />}
@@ -162,20 +164,23 @@ const Widget: React.FC = () => {
                                         style={{ "marginTop": "0px" }}
                                         dataSource={chatData}
                                         renderItem={(item: any) => {
+                                            const two = !item.productId;
                                             const targetUser = item.members.find((member: any) => member._id !== currentUser?._id);
                                             return (
                                                 <List.Item
-                                                    onClick={handleChatNavClick(item._id, targetUser)}
+                                                    onClick={handleChatNavClick(item._id, two ? `${targetUser.first_name} ${targetUser.last_name}` : item.productId.title)}
                                                     style={{ backgroundColor: selectedChatId === item._id ? '#f5f5f5' : '' }}
                                                     className='chat-nav'>
                                                     {/* todo! <>Jane Doe </>*/}
                                                     <List.Item.Meta
                                                         style={{ marginLeft: '12px', backgroundColor: selectedChatId === item._id ? '#f5f5f5' : '' }}
                                                         className='chat-nav'
-                                                        avatar={<Avatar src={targetUser.profile_picture} size="small" />}
+                                                        avatar={
+                                                            two ? <Avatar src={targetUser.profile_picture} size="small" />
+                                                                : <Avatar src={item.productId.image[0]} />}
                                                         title={
                                                             <>
-                                                                {`${targetUser.first_name} ${targetUser.last_name}`} &nbsp;<small>{dayjs(item.updatedAt).format('MM/DD HH:mm')}</small>
+                                                                {two ? `${targetUser.first_name} ${targetUser.last_name}` : item.productId.title} &nbsp;<small>{dayjs(item.updatedAt).format('MM/DD HH:mm')}</small>
                                                             </>
                                                         }
                                                         description={item.messages[item.messages.length - 1]?.text || <small>This is the start of a legendary conversation.</small>}
@@ -188,7 +193,7 @@ const Widget: React.FC = () => {
                             </div>
                         </Col>
                         <Col span={16}>
-                            <Card title={targetUser !== undefined ? `${targetUser.first_name} ${targetUser.last_name}` : "Chat"} style={{ width: '100%', height: '91.8%', boxSizing: 'border-box', borderRadius: '0' }} bodyStyle={{ padding: '5px' }}>
+                            <Card title={targetName !== undefined ? `${targetName}` : "Chat"} style={{ width: '100%', height: '91.8%', boxSizing: 'border-box', borderRadius: '0' }} bodyStyle={{ padding: '5px' }}>
                                 <div style={{
                                     height: '100%', width: '100%', overflow: 'auto',
                                 }}>
@@ -224,14 +229,19 @@ const Widget: React.FC = () => {
                                                             return (
                                                                 (
                                                                     <List.Item style={{ float: msg.right ? 'right' : undefined, clear: 'right', padding: '5px', maxWidth: '75%' }}>
-                                                                        <Card bodyStyle={{ padding: "12px", backgroundColor: msg.right ? '#f5222d' : '' }}>
-                                                                            <Text style={{ color: msg.right ? '#ffffff' : '' }}>{msg.text}</Text>
-                                                                        </Card>
+                                                                        <div>
+                                                                            <small>{`${msg.senderId.first_name} ${msg.senderId.last_name}`}</small>
+                                                                            <Card bodyStyle={{ padding: "12px", backgroundColor: msg.right ? '#f5222d' : '' }}>
+                                                                                <Text style={{ color: msg.right ? '#ffffff' : '' }}>{msg.text}</Text>
+                                                                            </Card>
+                                                                        </div>
                                                                     </List.Item>
                                                                 )
                                                             )
                                                         }}
-                                                    /><Divider><small style={{ color: 'gray' }}>{dayjs(Date.now()).format('MM-DD')}</small></Divider></>}
+                                                    />
+                                                    <Divider><small style={{ color: 'gray' }}>{dayjs((selectedChatMessages.length > 0 ? selectedChatMessages[0].timestamp : Date.now())).format('MM-DD')}</small></Divider>
+                                                </>}
                                         </InfiniteScroll>
                                     </div>
                                 </div>
