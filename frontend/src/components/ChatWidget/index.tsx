@@ -166,6 +166,8 @@ const Widget: React.FC = () => {
                                         renderItem={(item: any) => {
                                             const two = !item.productId;
                                             const targetUser = item.members.find((member: any) => member._id !== currentUser?._id);
+                                            console.log(item.members);
+                                            if (!targetUser) { return <></> }
                                             return (
                                                 <List.Item
                                                     onClick={handleChatNavClick(item._id, two ? `${targetUser.first_name} ${targetUser.last_name}` : item.productId.title)}
