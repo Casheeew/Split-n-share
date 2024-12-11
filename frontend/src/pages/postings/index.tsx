@@ -178,10 +178,10 @@ const Product: React.FC = () => {
 											Return
 										</Button>,
 										<Button key="decline" type="primary" onClick={async () => {
+											setApproveUserModalOpenId('');
 											await declineToJoinDeal(_id, member._id);
 											refresh();
 											message.success('Declined user');
-											setApproveUserModalOpenId('');
 
 										}}>
 											Decline
@@ -190,10 +190,10 @@ const Product: React.FC = () => {
 											key="accept"
 											type="primary"
 											onClick={async () => {
+												setApproveUserModalOpenId('');
 												await approveToJoinDeal(_id, member._id);
 												refresh();
 												message.success('Approved user');
-												setApproveUserModalOpenId('');
 											}}
 										>
 											Approve
