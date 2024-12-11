@@ -87,11 +87,11 @@ export const createTwoPersonChat = async (req: Request, res: Response, next: Nex
         }
 
         // Check if a chat already exists between the two users
-        const existingChat = await GroupChat.findOne({
+        const existingChat = await GroupChat.find({
             members: { $all: [creatorId, targetId] }, // Ensure both users are in the same chat
         });
 
-        if (existingChat && !existingChat.productId) {
+        if (existingChat.length > 0 && existingChat.some((chat) => !chat.productId)) {
             return res.status(200).json({
                 status: "success",
                 message: "Chat already exists",
