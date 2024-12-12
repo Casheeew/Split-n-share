@@ -66,7 +66,7 @@ const Product: React.FC = () => {
 		const chat = (await createChatForTwo({
 			targetId: creator?._id,
 		}));
-		const id = chat.data.find((x: any) => !x.productId)._id;
+		const id = (Array.isArray(chat?.data) ? chat?.data?.find((x: any) => !x.productId)?._id : chat.data._id) || '';
 		setSelectedChatId(id);
 		setChatOpen(true);
 	}
