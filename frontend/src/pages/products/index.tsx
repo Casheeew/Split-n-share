@@ -24,7 +24,7 @@ import jwt from 'jsonwebtoken';
 const { Title, Paragraph, Text } = Typography;
 
 const Product: React.FC = () => {
-	const { setChatOpen } = useContext(ChatContext);
+	const { setChatOpen, setSelectedChatId } = useContext(ChatContext);
 
 	const { productId } = useParams();
 
@@ -63,9 +63,11 @@ const Product: React.FC = () => {
 	const [requestStatus, setRequestStatus] = useState(false);
 
 	const onChatButtonClick = async () => {
-		await createChatForTwo({
+		const chat = (await createChatForTwo({
 			targetId: creator?._id,
-		});
+		}));
+		const id = chat.data.find((x: any) => !x.productId)._id;
+		setSelectedChatId(id);
 		setChatOpen(true);
 	}
 

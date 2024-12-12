@@ -38,13 +38,11 @@ const users = [
 ]
 
 const Widget: React.FC = () => {
-    const { chatOpen, setChatOpen } = useContext(ChatContext);
+    const { chatOpen, setChatOpen, selectedChatId, setSelectedChatId } = useContext(ChatContext);
     const { initialState } = useModel('@@initialState');
     const { currentUser } = initialState || {};
 
     const [isConnected, setIsConnected] = useState(socket.connected);
-
-    const [selectedChatId, setSelectedChatId] = useState('');
 
     const [selectedChatMessages, setSelectedChatMessages] = useState<any>([]);
 
@@ -54,12 +52,16 @@ const Widget: React.FC = () => {
 
     const { data: chatData, loading, run } = useRequest(() => queryChats(), {
         onSuccess: (data) => {
-            // console.log(data);
-            const targetUser = data[0].members.find((member: any) => member._id !== currentUser?._id);
+            const found = data.find((x: any) => x._id === selectedChatId);
+            console.log(selectedChatId);
+            console.log(found);
+            const selected = found ? found : data[0];
+            const targetUser = selected.members.find((member: any) => member._id !== currentUser?._id);
+            const name = targetUser ? `${targetUser.first_name} ${targetUser.last_name}` : 'Chat'; 
             if (data.length > 0) {
-                setSelectedChatId(data[0]._id);
-                setSelectedChatMessages(data[0].messages || []);
-                setTargetName(data[0].productId ? data[0].productId.title : `${targetUser.first_name} ${targetUser.last_name}`);
+                setSelectedChatId(selected._id);
+                setSelectedChatMessages(selected.messages || []);
+                setTargetName(selected.productId ? selected.productId.title : name);
             }
         }
     });
